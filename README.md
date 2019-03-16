@@ -12,6 +12,7 @@ Equivalent of the classic Brick Game recreated in Python for Raspberry Pi 3
 * Operating system: Raspbian 4.14
 * Python: 3.53
 * PyGame: 1.9.3
+* Code style guide: PEP 8 (https://www.python.org/dev/peps/pep-0008/) 
 
 ## Deployment
 
