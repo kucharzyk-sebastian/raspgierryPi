@@ -29,6 +29,7 @@ class RaspgierryPi:
                 sys.exit(0)
     
     def _update(self):
+        #TODO sk: implement and remove printing
         print(0)
     
     def _render(self):
