@@ -41,16 +41,16 @@ class Joystick:
     def is_y_pressed(self):
         return self._is_button_pressed.y
 
-    def is_joy_up_pressed(self):
+    def is_arrow_updir_pressed(self):
         return self._is_joy_pressed.up
 
-    def is_joy_down_pressed(self):
+    def is_arrow_downdir_pressed(self):
         return self._is_joy_pressed.down
 
-    def is_joy_left_pressed(self):
+    def is_arrow_leftdir_pressed(self):
         return self._is_joy_pressed.left
 
-    def is_joy_right_pressed(self):
+    def is_arrow_rightdir_pressed(self):
         return self._is_joy_pressed.right
 
     def _process_button_event(self, button_number, is_pressed):
@@ -70,11 +70,11 @@ class Joystick:
             self._process_axis_direction(self._is_joy_pressed, axis_value, "left", "right")
 
     @staticmethod
-    def _process_axis_direction(axis_dict, axis_value, lower_bound, upper_bound):
+    def _process_axis_direction(axis_dict, axis_value, axis_positive, axis_negative):
         if axis_value <= -1:
-            axis_dict[lower_bound] = True
+            axis_dict[axis_positive] = True
         elif axis_value >= 1:
-            axis_dict[upper_bound] = True
+            axis_dict[axis_negative] = True
         else:
-            axis_dict[lower_bound] = False
-            axis_dict[upper_bound] = False
+            axis_dict[axis_positive] = False
+            axis_dict[axis_negative] = False
