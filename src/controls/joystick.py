@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from src.helpers.dotdict import *
+from helpers.dotdict import *
 
 class Joystick:
     def __init__(self, joystick_id):
