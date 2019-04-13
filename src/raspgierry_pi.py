@@ -1,22 +1,17 @@
-import pygame
-import sys
-from pygame.locals import *
-from controls.joystick import *
-from gui.menu import *
+from src.controls.joystick import *
+from src.gui.menu import *
+
 
 class RaspgierryPi:
-
     def __init__(self):
         pygame.init()
-        self._display = {'width': 320, 'height': 480}
-        native_screen = pygame.display.Info()
-        if native_screen.current_w < self._display['width'] or native_screen.current_h < self._display['height']:
-            # TODO sk: Add error screen for minimum display when available
-            sys.exit(1)
-        self._window = pygame.display.set_mode((320, 480), RESIZABLE)
+        self._window = pygame.display.set_mode(( LayoutRsc.WINDOW_WIDTH,  LayoutRsc.WINDOW_HEIGHT), RESIZABLE)
         pygame.display.set_caption('Raspgierry Pi')
-        #TODO sk: check for ID and display error if not present
-        self._joystick = Joystick(0)
+        try:
+            self._joystick = Joystick(0)
+        except pygame.error:
+            print("Couldn't detect valid joystick")
+            sys.exit(1)
         self._menu = Menu()
         
     def run(self):
@@ -53,7 +48,6 @@ class RaspgierryPi:
                 if self._joystick.is_arrow_leftdir_pressed():
                     self._menu.move_left()
 
-
     def _update_intro(self):
         self._menu.update()
 
@@ -61,7 +55,6 @@ class RaspgierryPi:
         self._menu.render(self._window)
         pygame.display.update()
 
-        
     def _process_events(self):
         for event in pygame.event.get():
             if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
