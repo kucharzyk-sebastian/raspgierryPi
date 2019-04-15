@@ -1,6 +1,6 @@
 from src.resources.font_rsc import *
 from src.helpers.text import *
-from src.gui.indented_rect import *
+from src.gui.clipped_rect import *
 
 
 class Hud:
@@ -22,14 +22,14 @@ class Hud:
         self._game = game
         self._lives = 3
         self._points = 0
-        self._top_bar_rect = IndentedRect(pos_x=Hud.SIDE_MARGIN,
-                                          pos_y=Hud.TOP_MARGIN,
-                                          width=Hud.USABLE_AREA_WIDTH,
-                                          height=Hud.TOP_BAR_HEIGHT)
-        self._game_rect = IndentedRect(pos_x=Hud.SIDE_MARGIN,
-                                       pos_y=Hud.TOP_MARGIN + self._top_bar_rect.get_height() + Hud.TOP_MARGIN,
-                                       width=Hud.USABLE_AREA_WIDTH,
-                                       height=Hud.GAME_RECT_HEIGHT)
+        self._top_bar_rect = ClippedRect(pos_x=Hud.SIDE_MARGIN,
+                                         pos_y=Hud.TOP_MARGIN,
+                                         width=Hud.USABLE_AREA_WIDTH,
+                                         height=Hud.TOP_BAR_HEIGHT)
+        self._game_rect = ClippedRect(pos_x=Hud.SIDE_MARGIN,
+                                      pos_y=Hud.TOP_MARGIN + self._top_bar_rect.get_height() + Hud.TOP_MARGIN,
+                                      width=Hud.USABLE_AREA_WIDTH,
+                                      height=Hud.GAME_RECT_HEIGHT)
         self._heart_texture = pygame.transform.scale(pygame.image.load(Hud.HEART_TEXTURE_PATH), Hud.HEART_TEXTURE_SIZE)
         self._game_surface = pygame.Surface((LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT),
                                             pygame.SRCALPHA, 32)
@@ -40,8 +40,8 @@ class Hud:
     def process_events(self, joystick):
         self._game.process_events(joystick)
 
-    def update(self, time_per_frame):
-        self._game.update(time_per_frame)
+    def update(self, delta_time):
+        self._game.update(delta_time)
 
     def render(self, window):
         self._render_top_bar(window)
@@ -51,10 +51,10 @@ class Hud:
     def _render_top_bar(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
         self._top_bar_rect.draw(window, LayoutRsc.ITEM_REGULAR_BG_COLOR)
-        for i in range(0, self._lives):
+        for i in range(self._lives):
             heart_rect = self._heart_texture.get_rect()
-            first_hear_center = Hud.SIDE_MARGIN + Hud.TOP_BAR_INNER_MARGIN + self._heart_texture.get_width() / 2
-            heart_rect.center = (first_hear_center + (self._heart_texture.get_width() + Hud.HEART_SPACING) * i,
+            first_heart_center = Hud.SIDE_MARGIN + Hud.TOP_BAR_INNER_MARGIN + self._heart_texture.get_width() / 2
+            heart_rect.center = (first_heart_center + (self._heart_texture.get_width() + Hud.HEART_SPACING) * i,
                                  Hud.TOP_MARGIN + Hud.TOP_BAR_HEIGHT / 2)
             window.blit(self._heart_texture, heart_rect)
 

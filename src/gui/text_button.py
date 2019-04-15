@@ -11,12 +11,12 @@ class TextButton(Button):
     def get_text(self):
         return self._text
 
-    def draw_regular(self, window):
-        super().draw_regular(window)
+    def draw_focused(self, window):
+        super().draw_focused(window)
         self._draw_text(window)
 
-    def draw_highlighted(self, window):
-        super().draw_highlighted(window)
+    def draw_not_focused(self, window):
+        super().draw_not_focused(window)
         self._draw_text(window)
 
     def _draw_text(self, window):

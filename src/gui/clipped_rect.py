@@ -2,7 +2,7 @@ import pygame.draw
 from src.resources.layout_rsc import *
 
 
-class IndentedRect:
+class ClippedRect:
     def __init__(self, pos_x, pos_y, width, height):
         self._x = pos_x
         self._y = pos_y
@@ -29,6 +29,7 @@ class IndentedRect:
                          (self._x + LayoutRsc.CORNER_INDENT - 1, self._y - 1),
                          (self._x + self._width - LayoutRsc.CORNER_INDENT - 1, self._y - 1),
                          LayoutRsc.LINE_SHADOW_THICKNESS)
+
         pygame.draw.line(window,
                          LayoutRsc.LINE_COLOR,
                          (self._x + LayoutRsc.CORNER_INDENT, self._y),

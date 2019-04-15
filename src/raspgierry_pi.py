@@ -3,6 +3,8 @@ from src.gui.hud import *
 
 
 class RaspgierryPi:
+    TIME_PER_FRAME = 0.1
+
     def __init__(self):
         pygame.init()
         self._window = pygame.display.set_mode((LayoutRsc.WINDOW_WIDTH,  LayoutRsc.WINDOW_HEIGHT), RESIZABLE)
@@ -13,7 +15,6 @@ class RaspgierryPi:
             print("Couldn't detect valid joystick")
             sys.exit(1)
         self._menu = Menu()
-        self._time_per_frame = 0.1
         self._clock = pygame.time.Clock()
         
     def run(self):
@@ -21,21 +22,21 @@ class RaspgierryPi:
         while self._menu.is_running():
             self._menu.process_events(self._joystick)
             time_since_last_update += self._clock.tick()
-            while time_since_last_update > self._time_per_frame:
-                time_since_last_update -= self._time_per_frame
+            while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+                time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                 self._menu.process_events(self._joystick)
                 self._menu.update()
             self._menu.render(self._window)
 
-        game = self._menu.get_game()
+        game = self._menu.get_current_game()
         if game:
             hud = Hud(game)
             hud.render(self._window)
             while hud.is_running():
                 hud.process_events(self._joystick)
                 time_since_last_update += self._clock.tick()
-                while time_since_last_update > self._time_per_frame:
-                    time_since_last_update -= self._time_per_frame
+                while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+                    time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
-                    hud.update(self._time_per_frame)
+                    hud.update(time_since_last_update)
                 hud.render(self._window)

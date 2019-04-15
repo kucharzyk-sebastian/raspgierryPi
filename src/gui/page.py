@@ -19,7 +19,7 @@ class Page:
     BUTTON_HEIGHT = 50
     USABLE_AREA_WIDTH = 240
     WIDE_BUTTON_SIZE = USABLE_AREA_WIDTH
-    narrow_button_size = 115
+    NARROW_BUTTON_SIZE = 115
 
     def __init__(self, header="", buttons={}):
         self._header = header
@@ -101,7 +101,7 @@ class Page:
             self._buttons[self._active_button_idx].go_left()
         else:
             prev_idx = self._active_button_idx - 1
-            if prev_idx >= 0 and self._buttons[prev_idx].get_width() == Page.narrow_button_size:
+            if prev_idx >= 0 and self._buttons[prev_idx].get_width() == Page.NARROW_BUTTON_SIZE:
                 self._active_button_idx -= 1
 
     def move_right(self):
@@ -109,7 +109,7 @@ class Page:
             self._buttons[self._active_button_idx].go_right()
         else:
             next_idx = self._active_button_idx + 1
-            if next_idx < len(self._buttons) and self._buttons[next_idx].get_width() == Page.narrow_button_size:
+            if next_idx < len(self._buttons) and self._buttons[next_idx].get_width() == Page.NARROW_BUTTON_SIZE:
                 self._active_button_idx += 1
 
     def get_active_choices(self):
@@ -136,6 +136,6 @@ class Page:
 
         for i, button in enumerate(self._buttons):
             if i == self._active_button_idx:
-                button.draw_highlighted(window)
+                button.draw_not_focused(window)
             else:
-                button.draw_regular(window)
+                button.draw_focused(window)

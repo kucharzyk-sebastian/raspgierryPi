@@ -86,7 +86,7 @@ class Menu:
         self._settings = Settings()
         self._active_page_id = PageId.DEFAULT
         self._is_running = True
-        self._chosen_game = None
+        self._current_game = None
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -127,71 +127,79 @@ class Menu:
 
     def update(self):
         if self._is_moving.up:
-            self._pages[self._active_page_id].move_up()
-            if self._settings.sound_on:
-                SoundRsc.button_switch.play()
-            self._is_moving.up = False
+            self._update_moving_up()
         elif self._is_moving.down:
-            self._pages[self._active_page_id].move_down()
-            if self._settings.sound_on:
-                SoundRsc.button_switch.play()
-            self._is_moving.down = False
+            self._update_moving_down()
         elif self._is_moving.left:
-            self._pages[self._active_page_id].move_left()
-            if self._active_page_id == PageId.SETTINGS or self._active_page_id == PageId.PLAY:
-                self._update_settings()
-            if self._settings.sound_on:
-                SoundRsc.button_switch.play()
-            self._is_moving.left = False
+            self._update_moving_left()
         elif self._is_moving.right:
-            self._pages[self._active_page_id].move_right()
-            if self._active_page_id == PageId.SETTINGS or self._active_page_id == PageId.PLAY:
-                self._update_settings()
-            if self._settings.sound_on:
-                SoundRsc.button_switch.play()
-            self._is_moving.right = False
+            self._update_moving_right()
         elif self._is_moving.into:
-            active_button_id = self._pages[self._active_page_id].get_current_button_id()
-            if active_button_id == ButtonId.BACK:
-                self._pages[self._active_page_id].reset_current_button()
-                self._active_page_id = PageId.DEFAULT
-            elif self._active_page_id == PageId.DEFAULT:
-                if active_button_id == ButtonId.PLAY:
-                    self._active_page_id = PageId.PLAY
-                elif active_button_id == ButtonId.SETTINGS:
-                    self._active_page_id = PageId.SETTINGS
-                elif active_button_id == ButtonId.SCORES:
-                    self._active_page_id = PageId.SCORES
-                elif active_button_id == ButtonId.EXIT:
-                    self._is_running = False
-                elif active_button_id == ButtonId.ABOUT:
-                    self._active_page_id = PageId.ABOUT
-                elif active_button_id == ButtonId.HELP:
-                    self._active_page_id = PageId.HELP
-            elif self._active_page_id == PageId.PLAY:
-                if active_button_id == ButtonId.ENTER_GAME:
-                    if self._settings.game_type == GameType.Galaxian:
-                        self._chosen_game = Galaxian(self._settings.game_level, self._settings.sound_on)
-                    elif self._settings.game_type == GameType.Racing:
-                        self._chosen_game = Racing(self._settings.game_level, self._settings.sound_on)
-                    elif self._settings.game_type == GameType.Snake:
-                        self._chosen_game = Snake(self._settings.game_level, self._settings.sound_on)
-                    else:
-                        raise NotImplementedError("There is no game for " + str(self._settings.game_type))
-                    self._is_running = False
-            if self._settings.sound_on:
-                SoundRsc.button_click.play()
-            self._is_moving.into = False
+            self._update_moving_into()
 
-    def get_game(self):
-        return self._chosen_game
+    def _update_moving_up(self):
+        self._pages[self._active_page_id].move_up()
+        self._play_sound_and_end_movement(SoundRsc.button_switch, "up")
+
+    def _update_moving_down(self):
+        self._pages[self._active_page_id].move_down()
+        self._play_sound_and_end_movement(SoundRsc.button_switch, "down")
+
+    def _update_moving_left(self):
+        self._pages[self._active_page_id].move_left()
+        self._update_settings_if_needed()
+        self._play_sound_and_end_movement(SoundRsc.button_switch, "left")
+
+    def _update_moving_right(self):
+        self._pages[self._active_page_id].move_right()
+        self._update_settings_if_needed()
+        self._play_sound_and_end_movement(SoundRsc.button_switch, "right")
+
+    def _play_sound_and_end_movement(self, sound, direction):
+        self._play_sound_if_enabled(sound)
+        self._is_moving[direction] = False
+
+    def _update_settings_if_needed(self):
+        if self._active_page_id == PageId.SETTINGS or self._active_page_id == PageId.PLAY:
+            self._update_settings()
+
+    def _update_moving_into(self):
+        active_button_id = self._pages[self._active_page_id].get_current_button_id()
+        if active_button_id == ButtonId.BACK:
+            self._pages[self._active_page_id].reset_current_button()
+            self._active_page_id = PageId.DEFAULT
+        elif self._active_page_id == PageId.DEFAULT:
+            if active_button_id == ButtonId.PLAY:
+                self._active_page_id = PageId.PLAY
+            elif active_button_id == ButtonId.SETTINGS:
+                self._active_page_id = PageId.SETTINGS
+            elif active_button_id == ButtonId.SCORES:
+                self._active_page_id = PageId.SCORES
+            elif active_button_id == ButtonId.EXIT:
+                self._is_running = False
+            elif active_button_id == ButtonId.ABOUT:
+                self._active_page_id = PageId.ABOUT
+            elif active_button_id == ButtonId.HELP:
+                self._active_page_id = PageId.HELP
+        elif self._active_page_id == PageId.PLAY:
+            if active_button_id == ButtonId.ENTER_GAME:
+                if self._settings.game_type == GameType.Galaxian:
+                    self._current_game = Galaxian(self._settings.game_level, self._settings.is_sound_on)
+                elif self._settings.game_type == GameType.Racing:
+                    self._current_game = Racing(self._settings.game_level, self._settings.is_sound_on)
+                elif self._settings.game_type == GameType.Snake:
+                    self._current_game = Snake(self._settings.game_level, self._settings.is_sound_on)
+                else:
+                    raise NotImplementedError("There is no game for " + str(self._settings.game_type))
+                self._is_running = False
+        self._play_sound_and_end_movement(SoundRsc.button_click, "into")
+
+    def get_current_game(self):
+        return self._current_game
 
     def _update_settings(self):
         choices = self._pages[self._active_page_id].get_active_choices()
-        if ButtonId.SOUND_ON in choices:
-            self._settings.sound_on = True
-        elif ButtonId.SOUND_OFF in choices:
-            self._settings.sound_on = False
+        self._settings.is_sound_on = ButtonId.SOUND_ON in choices
 
         if ButtonId.GALAXIAN in choices:
             self._settings.game_type = GameType.Galaxian
@@ -210,3 +218,7 @@ class Menu:
     def render(self, window):
         self._pages[self._active_page_id].render(window)
         pygame.display.update()
+
+    def _play_sound_if_enabled(self, sound):
+        if self._settings.is_sound_on:
+            sound.play()

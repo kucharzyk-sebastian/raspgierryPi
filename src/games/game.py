@@ -1,8 +1,8 @@
 
 class Game:
-    def __init__(self, level, sound_on):
+    def __init__(self, level, is_sound_on):
         self._level = level
-        self._sound_on = sound_on
+        self._is_sound_on = is_sound_on
         self._is_running = True
 
     def process_events(self, joystick):

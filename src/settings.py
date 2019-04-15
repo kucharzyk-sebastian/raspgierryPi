@@ -14,7 +14,7 @@ class GameLevel(Enum):
 
 
 class Settings:
-    def __init__(self, sound_on=True, game=GameType.Galaxian, game_level=GameLevel.Easy):
-        self.sound_on = sound_on
+    def __init__(self, is_sound_on=True, game=GameType.Galaxian, game_level=GameLevel.Easy):
+        self.is_sound_on = is_sound_on
         self.game_type = game
         self.game_level = game_level
