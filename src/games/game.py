@@ -1,3 +1,4 @@
+
 class Game:
     def __init__(self, level, sound_on):
         self._level = level

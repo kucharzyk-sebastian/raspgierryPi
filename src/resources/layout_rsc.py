@@ -3,7 +3,8 @@ class LayoutRsc:
     WINDOW_HEIGHT = 480
     WINDOW_COLOR = (56, 21, 50)
 
-    USABLE_AREA_WIDTH = 240
+    GAME_AREA_WIDTH = 276
+    GAME_AREA_HEIGHT = 366
 
     ITEM_REGULAR_BG_COLOR = (46, 25, 43)
     ITEM_HIGHLIGHTED_BG_COLOR = (142, 22, 65)
@@ -15,5 +16,4 @@ class LayoutRsc:
     LINE_SHADOW_COLOR = (95, 79, 41)
     LINE_SHADOW_THICKNESS = 3
 
-    TEXTURES_PATH = '..\\textures\\'
-
+    TEXTURES_PATH = '..\\resources\\textures\\'

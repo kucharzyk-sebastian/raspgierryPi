@@ -1,8 +1,6 @@
-import pygame.draw
-from src.gui.button import *
 from src.resources.font_rsc import *
-from src.resources.layout_rsc import *
 from src.helpers.text import *
+from src.gui.button import *
 
 
 class TextButton(Button):
@@ -15,18 +13,28 @@ class TextButton(Button):
 
     def draw_regular(self, window):
         super().draw_regular(window)
-        self.draw_text(window)
+        self._draw_text(window)
 
     def draw_highlighted(self, window):
         super().draw_highlighted(window)
-        self.draw_text(window)
+        self._draw_text(window)
 
-    def draw_text(self, window):
+    def _draw_text(self, window):
         if isinstance(self._text, list):
             line_size = FontRsc.CONTENT_FONT_SMALL.get_linesize()
             current_height = self._y + line_size
             for line in self._text:
-                Text.render_centered_text(window, self._x + self._width / 2, current_height, FontRsc.CONTENT_FONT_SMALL, line, FontRsc.CONTENT_FONT_COLOR)
+                Text.render_centered_text(surface=window,
+                                          center_x=self._x + self._width / 2,
+                                          center_y=current_height,
+                                          font=FontRsc.CONTENT_FONT_SMALL,
+                                          text=line,
+                                          color=FontRsc.CONTENT_FONT_COLOR)
                 current_height += line_size + 0.25 * line_size
         else:
-            Text.render_centered_text(window, self._x + self._width / 2, self._y + self._height / 2 + self._height * 0.08, FontRsc.CONTENT_FONT_REGULAR, self._text, FontRsc.CONTENT_FONT_COLOR)
+            Text.render_centered_text(surface=window,
+                                      center_x=self._x + self._width / 2,
+                                      center_y=self._y + self._height / 2 + self._height * 0.08,
+                                      font=FontRsc.CONTENT_FONT_REGULAR,
+                                      text=self._text,
+                                      color=FontRsc.CONTENT_FONT_COLOR)

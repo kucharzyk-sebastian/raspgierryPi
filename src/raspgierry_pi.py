@@ -1,7 +1,6 @@
 from src.gui.menu import *
 from src.gui.hud import *
-from src.controls.joystick import *
-from src.gui.indented_rect import *
+
 
 class RaspgierryPi:
     def __init__(self):
@@ -30,17 +29,13 @@ class RaspgierryPi:
 
         game = self._menu.get_game()
         if game:
-            hud = Hud()
-            hud.draw(self._window)
-            self._window.fill(LayoutRsc.WINDOW_COLOR)
-            game_view = pygame.Surface((300, 370))
-            game_view.fill((255, 255, 255))
-            while game.is_running():
-                game.process_events(self._joystick)
+            hud = Hud(game)
+            hud.render(self._window)
+            while hud.is_running():
+                hud.process_events(self._joystick)
                 time_since_last_update += self._clock.tick()
                 while time_since_last_update > self._time_per_frame:
                     time_since_last_update -= self._time_per_frame
-                    game.process_events(self._joystick)
-                    game.update(self._time_per_frame)
-                hud.draw(self._window)
-                game.render(self._window)
+                    hud.process_events(self._joystick)
+                    hud.update(self._time_per_frame)
+                hud.render(self._window)

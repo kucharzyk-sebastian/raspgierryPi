@@ -1,6 +1,4 @@
-import pygame.draw
 from src.gui.indented_rect import *
-from src.resources.layout_rsc import *
 
 
 class Button(IndentedRect):

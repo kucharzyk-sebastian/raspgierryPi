@@ -1,48 +1,75 @@
+from enum import Enum
 from src.gui.text_button import *
 from src.gui.multi_choice_button import *
-from enum import Enum
 
 
 class ButtonType(Enum):
-    TextNarrow = 0
-    TextWide = 1
-    MultiChoiceShort = 2
-    MultiChoiceLong = 3
-    TextArea = 4
+    TEXT_NARROW = 0
+    TEXT_WIDE = 1
+    MULTI_CHOICE_SHORT = 2
+    MULTI_CHOICE_LONG = 3
+    TEXT_AREA = 4
 
 
 class Page:
-    header_height = 100
-    margin_left = 40
-    vertical_space = 20
-    horizontal_space = 10
-    button_height = 50
-    wide_button_size = LayoutRsc.USABLE_AREA_WIDTH
+    HEADER_HEIGHT = 100
+    MARGIN_LEFT = 40
+    VERTICAL_SPACE = 20
+    HORIZONTAL_SPACE = 10
+    BUTTON_HEIGHT = 50
+    USABLE_AREA_WIDTH = 240
+    WIDE_BUTTON_SIZE = USABLE_AREA_WIDTH
     narrow_button_size = 115
 
     def __init__(self, header="", buttons={}):
         self._header = header
         self._buttons = []
 
-        current_height = Page.header_height
-        current_width = Page.margin_left
+        current_height = Page.HEADER_HEIGHT
+        current_width = Page.MARGIN_LEFT
         for button_type, button in buttons:
             button_id, label = button
-            if button_type == ButtonType.TextNarrow:
-                self._buttons.append(TextButton(current_width, current_height, LayoutRsc.USABLE_AREA_WIDTH / 2 - 5, Page.button_height, label, button_id))
-                current_width += self._buttons[-1].get_width() + Page.horizontal_space
-            elif button_type == ButtonType.TextWide:
-                self._buttons.append(TextButton(Page.margin_left, current_height, LayoutRsc.USABLE_AREA_WIDTH, Page.button_height, label, button_id))
-                current_height += self._buttons[-1].get_height() + Page.vertical_space
-            elif button_type == ButtonType.TextArea:
-                self._buttons.append(TextButton(Page.margin_left, current_height, LayoutRsc.USABLE_AREA_WIDTH, (Page.button_height * 4 + Page.vertical_space * 3), label, button_id, True))
-                current_height += self._buttons[-1].get_height() + Page.vertical_space
-            elif button_type == ButtonType.MultiChoiceShort:
-                self._buttons.append(MultiChoiceButton(Page.margin_left, current_height, LayoutRsc.USABLE_AREA_WIDTH, Page.button_height, label, button_id))
-                current_height += self._buttons[-1].get_height() + Page.vertical_space
-            elif button_type == ButtonType.MultiChoiceLong:
-                self._buttons.append(MultiChoiceButton(Page.margin_left, current_height, LayoutRsc.USABLE_AREA_WIDTH, Page.button_height * 3 + Page.vertical_space * 2, label, button_id))
-                current_height += self._buttons[-1].get_height() + Page.vertical_space
+            if button_type == ButtonType.TEXT_NARROW:
+                self._buttons.append(TextButton(pos_x=current_width,
+                                                pos_y=current_height,
+                                                width=Page.USABLE_AREA_WIDTH / 2 - 5,
+                                                height=Page.BUTTON_HEIGHT,
+                                                text=label,
+                                                id=button_id))
+                current_width += self._buttons[-1].get_width() + Page.HORIZONTAL_SPACE
+            elif button_type == ButtonType.TEXT_WIDE:
+                self._buttons.append(TextButton(pos_x=Page.MARGIN_LEFT,
+                                                pos_y=current_height,
+                                                width=Page.USABLE_AREA_WIDTH,
+                                                height=Page.BUTTON_HEIGHT,
+                                                text=label,
+                                                id=button_id))
+                current_height += self._buttons[-1].get_height() + Page.VERTICAL_SPACE
+            elif button_type == ButtonType.TEXT_AREA:
+                self._buttons.append(TextButton(pos_x=Page.MARGIN_LEFT,
+                                                pos_y=current_height,
+                                                width=Page.USABLE_AREA_WIDTH,
+                                                height=(Page.BUTTON_HEIGHT * 4 + Page.VERTICAL_SPACE * 3),
+                                                text=label,
+                                                id=button_id,
+                                                is_disabled=True))
+                current_height += self._buttons[-1].get_height() + Page.VERTICAL_SPACE
+            elif button_type == ButtonType.MULTI_CHOICE_SHORT:
+                self._buttons.append(MultiChoiceButton(pos_x=Page.MARGIN_LEFT,
+                                                       pos_y=current_height,
+                                                       width=Page.USABLE_AREA_WIDTH,
+                                                       height=Page.BUTTON_HEIGHT,
+                                                       choices=label,
+                                                       id=button_id))
+                current_height += self._buttons[-1].get_height() + Page.VERTICAL_SPACE
+            elif button_type == ButtonType.MULTI_CHOICE_LONG:
+                self._buttons.append(MultiChoiceButton(pos_x=Page.MARGIN_LEFT,
+                                                       pos_y=current_height,
+                                                       width=Page.USABLE_AREA_WIDTH,
+                                                       height=Page.BUTTON_HEIGHT * 3 + Page.VERTICAL_SPACE * 2,
+                                                       choices=label,
+                                                       id=button_id))
+                current_height += self._buttons[-1].get_height() + Page.VERTICAL_SPACE
 
         for i, button in enumerate(self._buttons):
             if not button.is_disabled():
@@ -100,7 +127,12 @@ class Page:
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
-        Text.render_centered_text(window, LayoutRsc.WINDOW_WIDTH / 2, Page.header_height / 2, FontRsc.HEADER_FONT, self._header, FontRsc.HEADER_FONT_COLOR)
+        Text.render_centered_text(surface=window,
+                                  center_x=LayoutRsc.WINDOW_WIDTH / 2,
+                                  center_y=Page.HEADER_HEIGHT / 2,
+                                  font=FontRsc.HEADER_FONT,
+                                  text=self._header,
+                                  color=FontRsc.HEADER_FONT_COLOR)
 
         for i, button in enumerate(self._buttons):
             if i == self._active_button_idx:
