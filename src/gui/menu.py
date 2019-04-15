@@ -5,7 +5,10 @@ from src.helpers.dotdict import *
 from src.helpers.sound import *
 from src.resources.sound_rsc import *
 from enum import Enum
-
+from src.controls.joystick import *
+from src.games.galaxian.galaxian import *
+from src.games.racing.racing import *
+from src.games.snake.snake import *
 
 class ButtonId(Enum):
     Back = 0
@@ -75,6 +78,30 @@ class Menu:
         self._is_moving = dotdict({"up": False, "down": False, "left": False, "right": False, "into": False})
         self._settings = Settings()
         self._active_page_id = PageId.Default
+        self._is_running = True
+        self._chosen_game = None
+
+    def process_events(self, joystick):
+        for event in pygame.event.get():
+            # TODO sk: remove these lines when ready
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                sys.exit(0)
+
+            if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
+                joystick.process_event(event)
+                if joystick.is_a_pressed():
+                    self.get_into()
+                if joystick.is_arrow_downdir_pressed():
+                    self.move_down()
+                if joystick.is_arrow_updir_pressed():
+                    self.move_up()
+                if joystick.is_arrow_rightdir_pressed():
+                    self.move_right()
+                if joystick.is_arrow_leftdir_pressed():
+                    self.move_left()
+
+    def is_running(self):
+        return self._is_running
 
     def move_up(self):
         self._is_moving.up = True
@@ -125,19 +152,27 @@ class Menu:
                 elif active_button_id == ButtonId.Scores:
                     self._active_page_id = PageId.Scores
                 elif active_button_id == ButtonId.Exit:
-                    # TODO sk: change way of quitting
-                    sys.exit(0)
+                    self._is_running = False
                 elif active_button_id == ButtonId.About:
                     self._active_page_id = PageId.About
                 elif active_button_id == ButtonId.Help:
                     self._active_page_id = PageId.Help
             elif self._active_page_id == PageId.Play:
-                print(active_button_id)
                 if active_button_id == ButtonId.EnterGame:
-                    # TODO sk: remove when game page will be ready
-                    pass
+                    if self._settings.GameType == GameType.Galaxian:
+                        self._chosen_game = Galaxian(self._settings.GameLevel, self._settings.SoundOn)
+                    elif self._settings.GameType == GameType.Racing:
+                        self._chosen_game = Racing(self._settings.GameLevel, self._settings.SoundOn)
+                    elif self._settings.GameType == GameType.Snake:
+                        self._chosen_game = Snake(self._settings.GameLevel, self._settings.SoundOn)
+                    else:
+                        raise NotImplementedError("There is no game for " + str(self._settings.GameType))
+                    self._is_running = False
             play_and_wait(SoundRsc.button_click)
             self._is_moving.into = False
+
+    def get_game(self):
+        return self._chosen_game
 
     def update_settings(self):
         choices = self._pages[self._active_page_id].get_active_choices()
@@ -147,11 +182,11 @@ class Menu:
             self._settings.SoundOn = False
 
         if ButtonId.Galaxian in choices:
-            self._settings.Game = Game.Galaxian
+            self._settings.GameType = GameType.Galaxian
         elif ButtonId.Racing in choices:
-            self._settings.Game = Game.Racing
+            self._settings.GameType = GameType.Racing
         elif ButtonId.Snake in choices:
-            self._settings.Game = Game.Snake
+            self._settings.GameType = GameType.Snake
 
         if ButtonId.Easy in choices:
             self._settings.Level = GameLevel.Easy
@@ -162,3 +197,4 @@ class Menu:
 
     def render(self, window):
         self._pages[self._active_page_id].render(window)
+        pygame.display.update()

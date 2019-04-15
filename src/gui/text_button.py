@@ -13,8 +13,15 @@ class TextButton(Button):
     def get_text(self):
         return self._text
 
-    def draw(self, window, bg_color):
-        self.draw_shape(window, bg_color)
+    def draw_regular(self, window):
+        super().draw_regular(window)
+        self.draw_text(window)
+
+    def draw_highlighted(self, window):
+        super().draw_highlighted(window)
+        self.draw_text(window)
+
+    def draw_text(self, window):
         if isinstance(self._text, list):
             line_size = FontRsc.CONTENT_FONT_SMALL.get_linesize()
             current_height = self._y + line_size

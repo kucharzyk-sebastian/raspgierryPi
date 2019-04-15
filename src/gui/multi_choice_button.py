@@ -13,7 +13,7 @@ class MultiChoiceButton(Button):
         self._choices = []
         for choice_id, choice_label in choices.items():
             try:
-                img = pygame.image.load(LayoutRsc.TEXTURES_PATH + choice_label + '.png')
+                img = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'buttons\\' + choice_label + '.png')
                 self._choices.append((choice_id, img))
             except pygame.error:
                 self._choices.append((choice_id, choice_label))
@@ -47,7 +47,12 @@ class MultiChoiceButton(Button):
         pygame.draw.line(window, LayoutRsc.LINE_COLOR, (self._x + self._width - 5, self._y + self._height / 2), (self._x + self._width - 20, self._y + self._height / 2 - 15), LayoutRsc.LINE_THICKNESS)
         pygame.draw.line(window, LayoutRsc.LINE_COLOR, (self._x + self._width - 5, self._y + self._height / 2), (self._x + self._width - 20, self._y + self._height / 2 + 15), LayoutRsc.LINE_THICKNESS)
 
-    def draw(self, window, bg_color):
-        self.draw_shape(window, bg_color)
+    def draw_regular(self, window):
+        super().draw_regular(window)
+        self.draw_images_if_needed(window)
+        self.draw_arrows(window)
+
+    def draw_highlighted(self, window):
+        super().draw_highlighted(window)
         self.draw_images_if_needed(window)
         self.draw_arrows(window)
