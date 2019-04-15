@@ -16,4 +16,4 @@ class LayoutRsc:
     LINE_SHADOW_COLOR = (95, 79, 41)
     LINE_SHADOW_THICKNESS = 3
 
-    TEXTURES_PATH = '..\\resources\\textures\\'
+    TEXTURES_PATH = '../resources/textures/'

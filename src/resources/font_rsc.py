@@ -5,7 +5,7 @@ if not pygame.font.get_init():
 
 
 class FontRsc:
-    FONTS_PATH = "..\\resources\\fonts\\"
+    FONTS_PATH = "../resources/fonts/"
     CONTENT_FONT_SMALL = pygame.font.Font(FONTS_PATH + "SFPixelate.ttf", 17)
     CONTENT_FONT_REGULAR = pygame.font.Font(FONTS_PATH + "SFPixelate.ttf", 24)
     CONTENT_FONT_COLOR = (203, 200, 60)

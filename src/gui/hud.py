@@ -14,7 +14,7 @@ class Hud:
     TOP_BAR_INNER_MARGIN = 10
     HEART_SPACING = 5
     HEART_TEXTURE_SIZE = (29, 25)
-    HEART_TEXTURE_PATH = LayoutRsc.TEXTURES_PATH + 'hud\\heart.png'
+    HEART_TEXTURE_PATH = LayoutRsc.TEXTURES_PATH + 'hud/heart.png'
 
     GAME_RECT_HEIGHT = LayoutRsc.GAME_AREA_HEIGHT + BORDER_WIDTH * 2
 
