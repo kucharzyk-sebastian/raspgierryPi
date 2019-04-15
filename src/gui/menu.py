@@ -1,5 +1,4 @@
 import sys
-from src.helpers.sound import *
 from src.resources.sound_rsc import *
 from src.gui.page import *
 from src.settings import *
@@ -129,23 +128,27 @@ class Menu:
     def update(self):
         if self._is_moving.up:
             self._pages[self._active_page_id].move_up()
-            Sound.play_and_wait(SoundRsc.button_switch)
+            if self._settings.sound_on:
+                SoundRsc.button_switch.play()
             self._is_moving.up = False
         elif self._is_moving.down:
             self._pages[self._active_page_id].move_down()
-            Sound.play_and_wait(SoundRsc.button_switch)
+            if self._settings.sound_on:
+                SoundRsc.button_switch.play()
             self._is_moving.down = False
         elif self._is_moving.left:
             self._pages[self._active_page_id].move_left()
             if self._active_page_id == PageId.SETTINGS or self._active_page_id == PageId.PLAY:
                 self._update_settings()
-            Sound.play_and_wait(SoundRsc.button_switch)
+            if self._settings.sound_on:
+                SoundRsc.button_switch.play()
             self._is_moving.left = False
         elif self._is_moving.right:
             self._pages[self._active_page_id].move_right()
             if self._active_page_id == PageId.SETTINGS or self._active_page_id == PageId.PLAY:
                 self._update_settings()
-            Sound.play_and_wait(SoundRsc.button_switch)
+            if self._settings.sound_on:
+                SoundRsc.button_switch.play()
             self._is_moving.right = False
         elif self._is_moving.into:
             active_button_id = self._pages[self._active_page_id].get_current_button_id()
@@ -167,16 +170,17 @@ class Menu:
                     self._active_page_id = PageId.HELP
             elif self._active_page_id == PageId.PLAY:
                 if active_button_id == ButtonId.ENTER_GAME:
-                    if self._settings.GameType == GameType.Galaxian:
-                        self._chosen_game = Galaxian(self._settings.GameLevel, self._settings.SoundOn)
-                    elif self._settings.GameType == GameType.Racing:
-                        self._chosen_game = Racing(self._settings.GameLevel, self._settings.SoundOn)
-                    elif self._settings.GameType == GameType.Snake:
-                        self._chosen_game = Snake(self._settings.GameLevel, self._settings.SoundOn)
+                    if self._settings.game_type == GameType.Galaxian:
+                        self._chosen_game = Galaxian(self._settings.game_level, self._settings.sound_on)
+                    elif self._settings.game_type == GameType.Racing:
+                        self._chosen_game = Racing(self._settings.game_level, self._settings.sound_on)
+                    elif self._settings.game_type == GameType.Snake:
+                        self._chosen_game = Snake(self._settings.game_level, self._settings.sound_on)
                     else:
-                        raise NotImplementedError("There is no game for " + str(self._settings.GameType))
+                        raise NotImplementedError("There is no game for " + str(self._settings.game_type))
                     self._is_running = False
-            Sound.play_and_wait(SoundRsc.button_click)
+            if self._settings.sound_on:
+                SoundRsc.button_click.play()
             self._is_moving.into = False
 
     def get_game(self):
@@ -185,16 +189,16 @@ class Menu:
     def _update_settings(self):
         choices = self._pages[self._active_page_id].get_active_choices()
         if ButtonId.SOUND_ON in choices:
-            self._settings.SoundOn = True
+            self._settings.sound_on = True
         elif ButtonId.SOUND_OFF in choices:
-            self._settings.SoundOn = False
+            self._settings.sound_on = False
 
         if ButtonId.GALAXIAN in choices:
-            self._settings.GameType = GameType.Galaxian
+            self._settings.game_type = GameType.Galaxian
         elif ButtonId.RACING in choices:
-            self._settings.GameType = GameType.Racing
+            self._settings.game_type = GameType.Racing
         elif ButtonId.SNAKE in choices:
-            self._settings.GameType = GameType.Snake
+            self._settings.game_type = GameType.Snake
 
         if ButtonId.EASY in choices:
             self._settings.Level = GameLevel.Easy

@@ -13,7 +13,7 @@ class RaspgierryPi:
             print("Couldn't detect valid joystick")
             sys.exit(1)
         self._menu = Menu()
-        self._time_per_frame = 1/60
+        self._time_per_frame = 0.1
         self._clock = pygame.time.Clock()
         
     def run(self):
