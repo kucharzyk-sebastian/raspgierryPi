@@ -1,36 +1,42 @@
-import pygame, sys
-from pygame.locals import *
-from controls.joystick import *
+from src.gui.menu import *
+from src.gui.hud import *
+
 
 class RaspgierryPi:
+    TIME_PER_FRAME = 0.1
+
     def __init__(self):
         pygame.init()
-        self._display = {'width': 320, 'height': 480}
-        native_screen = pygame.display.Info()
-        if native_screen.current_w < self._display['width'] or native_screen.current_h < self._display['height']:
-            # TODO sk: Add error screen for minimum display when available
-            sys.exit(1)
-        self._display_ratio = native_screen.current_w /  self._display['width']
-        self._window = pygame.display.set_mode((0,0), FULLSCREEN)
+        self._window = pygame.display.set_mode((LayoutRsc.WINDOW_WIDTH,  LayoutRsc.WINDOW_HEIGHT), RESIZABLE)
         pygame.display.set_caption('Raspgierry Pi')
+        try:
+            self._joystick = Joystick(0)
+        except pygame.error:
+            print("Couldn't detect valid joystick")
+            sys.exit(1)
+        self._menu = Menu()
+        self._clock = pygame.time.Clock()
         
     def run(self):
-        while True:
-            self._process_events()
-            self._update()
-            self._render()
-    
-    def _process_events(self):
-        for event in pygame.event.get():
-            if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
-                # TODO sk: Add joystick handling when available
-                sys.exit(1)
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                sys.exit(0)
-    
-    def _update(self):
-        #TODO sk: implement and remove printing
-        print(0)
-    
-    def _render(self):
-        pygame.display.update()
+        time_since_last_update = 0
+        while self._menu.is_running():
+            self._menu.process_events(self._joystick)
+            time_since_last_update += self._clock.tick()
+            while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+                time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
+                self._menu.process_events(self._joystick)
+                self._menu.update()
+            self._menu.render(self._window)
+
+        game = self._menu.get_current_game()
+        if game:
+            hud = Hud(game)
+            hud.render(self._window)
+            while hud.is_running():
+                hud.process_events(self._joystick)
+                time_since_last_update += self._clock.tick()
+                while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+                    time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
+                    hud.process_events(self._joystick)
+                    hud.update(time_since_last_update)
+                hud.render(self._window)

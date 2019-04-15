@@ -1,6 +1,7 @@
 import pygame
-from pygame.locals import *
 from src.helpers.dotdict import *
+from pygame.locals import *
+
 
 class Joystick:
     def __init__(self, joystick_id):
@@ -8,13 +9,13 @@ class Joystick:
             pygame.joystick.init()
         self._joystick = pygame.joystick.Joystick(joystick_id)
         self._joystick.init()
-        self._is_button_pressed = dotdict({
+        self._is_button_pressed = DotDict({
             "a": False,
             "b": False,
             "x": False,
             "y": False,
         })
-        self._is_joy_pressed = dotdict({
+        self._is_joy_pressed = DotDict({
             "up": False,
             "down": False,
             "left": False,
