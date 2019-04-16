@@ -20,8 +20,8 @@ class Hud:
 
     def __init__(self, game):
         self._game = game
-        self._lives = 3
-        self._points = 0
+        self._lives = game.get_lives()
+        self._points = game.get_points()
         self._top_bar_rect = ClippedRect(pos_x=Hud.SIDE_MARGIN,
                                          pos_y=Hud.TOP_MARGIN,
                                          width=Hud.USABLE_AREA_WIDTH,
@@ -42,6 +42,8 @@ class Hud:
 
     def update(self, delta_time):
         self._game.update(delta_time)
+        self._points = self._game.get_points()
+        self._lives = self._game.get_lives()
 
     def render(self, window):
         self._render_top_bar(window)

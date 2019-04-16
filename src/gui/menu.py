@@ -199,7 +199,10 @@ class Menu:
 
     def _update_settings(self):
         choices = self._pages[self._active_page_id].get_active_choices()
-        self._settings.is_sound_on = ButtonId.SOUND_ON in choices
+        if ButtonId.SOUND_ON in choices:
+            self._settings.is_sound_on = True
+        elif ButtonId.SOUND_OFF in choices:
+            self._settings.is_sound_on = False
 
         if ButtonId.GALAXIAN in choices:
             self._settings.game_type = GameType.Galaxian

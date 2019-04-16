@@ -38,5 +38,5 @@ class RaspgierryPi:
                 while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
-                    hud.update(time_since_last_update)
+                    hud.update(time_since_last_update * 0.001)
                 hud.render(self._window)
