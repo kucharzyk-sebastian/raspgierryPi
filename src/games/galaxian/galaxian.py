@@ -1,134 +1,91 @@
-from src.resources.layout_rsc import *
-from src.resources.sound_rsc import *
 from src.games.game import *
 from src.controls.joystick import *
+from src.settings import GameLevel
+from src.games.galaxian.player import *
+from src.games.galaxian.enemy import *
 import pygame
 import sys
-
-
-class Enemy(pygame.sprite.Sprite):
-    TEXTURE_PATH = LayoutRsc.TEXTURES_PATH + '/galaxian/enemy_1.png'
-    TEXTURE_SIZE = (40, 28)
-    SPEED = 4
-
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self._x = x
-        self._y = y
-        self.image = pygame.transform.scale(pygame.image.load(Enemy.TEXTURE_PATH), Enemy.TEXTURE_SIZE)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-
-    def update(self, delta_time):
-        self._y += Enemy.SPEED * delta_time
-        if (self._y - self.rect.y) > Enemy.TEXTURE_SIZE[1]:
-            self.rect.y = self._y
-
-
-class Projectile(pygame.sprite.Sprite):
-    TEXTURE_PATH = LayoutRsc.TEXTURES_PATH + '/galaxian/projectile.png'
-    TEXTURE_SIZE = (8, 8)
-    SPEED = 40
-
-    def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self._x = x
-        self._y = y
-        self.image = pygame.transform.scale(pygame.image.load(Projectile.TEXTURE_PATH), Projectile.TEXTURE_SIZE)
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-
-    def update(self, delta_time):
-        self._y -= Projectile.SPEED * delta_time
-        if (self.rect.y - self._y) > Projectile.SPEED:
-            self.rect.y = self._y
-
-
-class Player(pygame.sprite.Sprite):
-    TEXTURE_PATH = LayoutRsc.TEXTURES_PATH + '/galaxian/ship.png'
-    TEXTURE_SIZE = (40, 45)
-    INNER_MARGIN = 5
-    SPEED = 40
-
-    def __init__(self, projectiles, is_sound_on):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(pygame.image.load(Player.TEXTURE_PATH), Player.TEXTURE_SIZE)
-        self.rect = self.image.get_rect()
-        self._is_moving = DotDict({"left": False, "right": False})
-        self._launch_projectile = False
-        self._sprites = projectiles
-        self._is_sound_on = is_sound_on
-
-    def move_left(self):
-        self._is_moving.left = True
-
-    def move_right(self):
-        self._is_moving.right = True
-
-    def launch_projectile(self):
-        self._launch_projectile = True
-
-    def update(self, delta_time):
-        if self._is_moving.left:
-            if self.rect.x > 0:
-                self.rect.x -= Player.SPEED
-            self._is_moving.left = False
-        elif self._is_moving.right:
-            if self.rect.x < LayoutRsc.GAME_AREA_WIDTH - Player.TEXTURE_SIZE[0]:
-                self.rect.x += Player.SPEED
-            self._is_moving.right = False
-
-        if self._launch_projectile:
-            self._sprites.add(Projectile(self.rect.center[0], self.rect.center[1]))
-            self.play_sound_if_needed(SoundRsc.projectile_launch)
-            self._launch_projectile = False
-
-    def play_sound_if_needed(self, sound):
-        if self._is_sound_on:
-            sound.play()
+import random
 
 
 class Galaxian(Game):
+    SPEEDS = {GameLevel.Easy: 10, GameLevel.Medium: 20, GameLevel.Hard: 40}
+
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
-        self.points = 0
-        self.lives = 3
-        self.enemies = pygame.sprite.Group()
-        self.projectiles = pygame.sprite.Group()
-        self.players = pygame.sprite.Group()
-        self._player = Player(self.projectiles, is_sound_on)
-        self.players.add(self._player)
-        self._player.rect.center = (LayoutRsc.GAME_AREA_WIDTH / 2, LayoutRsc.GAME_AREA_HEIGHT - Player.TEXTURE_SIZE[1]/2)
+        self._points = 0
+        self._lives = 3
+        self._enemies = pygame.sprite.Group()
+        self._projectiles = pygame.sprite.Group()
+        self._player = Player(x=LayoutRsc.GAME_AREA_WIDTH / 2,
+                              y=LayoutRsc.GAME_AREA_HEIGHT - Player.HEIGHT/2,
+                              projectiles=self._projectiles,
+                              is_sound_on=is_sound_on)
+        self.enemy_speed = Galaxian.SPEEDS[level]
+        self._add_row_of_enemies()
+        self._first_enemies_row_y = 0
 
-        enemies = [Enemy(0, 0)]
-        while enemies[-1].rect.topleft[0] + Enemy.TEXTURE_SIZE[0] < LayoutRsc.GAME_AREA_WIDTH:
-            enemies.append(Enemy(enemies[-1].rect.topleft[0] + Enemy.TEXTURE_SIZE[0], enemies[-1].rect.topleft[1]))
-        self.enemies.add(enemies)
+    def _add_row_of_enemies(self):
+        num_of_enemies = 7
         enemies = []
+        special_idx = random.randrange(0, num_of_enemies)
+        for i in range(num_of_enemies):
+            if i == special_idx:
+                enemies.append(Enemy(Enemy.WIDTH/2 + i*Enemy.WIDTH, Enemy.HEIGHT / 2, True))
+            else:
+                enemies.append(Enemy(Enemy.WIDTH/2 + i*Enemy.WIDTH, Enemy.HEIGHT / 2))
+        self._enemies.add(enemies)
+        self._play_sound_if_needed(GalaxianRsc.ENEMY_GETS_CLOSER)
 
     def update(self, delta_time):
-        res = pygame.sprite.groupcollide(self.enemies, self.projectiles, True, True)
-        for i in range(len(res)):
-            self.play_sound_if_needed(SoundRsc.enemy_death)
-            self.points += 10
+        self._player.update(delta_time)
+        self._enemies.update(delta_time)
+        self._projectiles.update(delta_time)
+        self._update_enemies_rows(delta_time)
+        self._collide_enemies_with_projectiles()
+        self._destroy_outrange_projectiles()
+        self._collide_enemies_with_player()
 
-        self.enemies.update(delta_time)
-        self.projectiles.update(delta_time)
-        self.players.update(delta_time)
-        for p in self.projectiles:
+    def _update_enemies_rows(self, delta_time):
+        self._first_enemies_row_y += self.enemy_speed * delta_time
+        if self._first_enemies_row_y >= Enemy.HEIGHT:
+            for enemy in self._enemies:
+                enemy.go_down()
+            self._add_row_of_enemies()
+            self._first_enemies_row_y = 0
+
+    def _collide_enemies_with_projectiles(self):
+        for enemy in pygame.sprite.groupcollide(self._enemies, self._projectiles, True, True):
+            if enemy.is_special():
+                self._points += 3
+                self._play_sound_if_needed(GalaxianRsc.SPECIAL_ENEMY_DEATH)
+            else:
+                self._points += 1
+                self._play_sound_if_needed(GalaxianRsc.ENEMY_DEATH)
+
+    def _destroy_outrange_projectiles(self):
+        for p in self._projectiles:
             if p.rect.center[1] < 0:
                 p.kill()
 
-        for e in self.enemies:
-            if e.rect.midbottom[1] >= LayoutRsc.GAME_AREA_HEIGHT:
-                pass
-                #self._is_running = False
+    def _collide_enemies_with_player(self):
+        for enemy in self._enemies:
+            if enemy.rect.midbottom[1] > LayoutRsc.GAME_AREA_HEIGHT - Player.HEIGHT:
+                self._lives -= 1
+                if self._lives == 0:
+                    self._is_running = False
+                else:
+                    self._enemies.empty()
+                    self._projectiles.empty()
+                    self._play_sound_if_needed(GalaxianRsc.PLAYER_DEATH)
+                    self._player.respawn()
+                break
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
-        self.enemies.draw(window)
-        self.projectiles.draw(window)
-        self.players.draw(window)
+        self._enemies.draw(window)
+        self._projectiles.draw(window)
+        window.blit(self._player.image, self._player.rect)
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -144,15 +101,13 @@ class Galaxian(Game):
                     self._player.move_right()
                 if joystick.is_arrow_leftdir_pressed():
                     self._player.move_left()
-                if joystick.is_b_pressed():
-                    sys.exit(0)
 
     def get_points(self):
-        return self.points
+        return self._points
 
     def get_lives(self):
-        return self.lives
+        return self._lives
 
-    def play_sound_if_needed(self, sound):
+    def _play_sound_if_needed(self, sound):
         if self._is_sound_on:
             sound.play()
