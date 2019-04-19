@@ -26,7 +26,7 @@ class Board():
                              for x in range(fields_horizontally)]
 
         self._fruit = Fruit(self)
-        self._fruit.rect.center = self.get_rect(0,0).center # TODO jagros: put it randomly
+        self._fruit.rect.center = self.get_rect(10,10).center # TODO jagros: put it randomly
 
 
     def get_fruit(self):
@@ -43,12 +43,11 @@ class Board():
 
     def remove_old_fruit_and_put_new(self, snake):
         while True:
-            new_fruit_x_pos = randrange(self._fields_horizontally)
-            new_fruit_y_pos = randrange(self._fields_vertically)
-            new_fruit_rect = pygame.Rect(new_fruit_x_pos, new_fruit_y_pos, self._field_width, self._field_height)
+            new_fruit_rect = self.get_rect(randrange(self._fields_horizontally), randrange(self._fields_vertically))
             new_fruit_sprite = pygame.sprite.Sprite()
             new_fruit_sprite.rect = new_fruit_rect
-            if(pygame.sprite.spritecollide(new_fruit_sprite, snake.get_occupied_points()) == None):
+            if(pygame.sprite.spritecollideany(new_fruit_sprite, snake.get_occupied_points()) == None):
+                self._fruit.rect = new_fruit_sprite.rect
                 break;
 
     def get_middle(self):

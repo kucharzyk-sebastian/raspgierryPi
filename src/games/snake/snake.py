@@ -27,7 +27,7 @@ class SnakePart(pygame.sprite.Sprite):
     def update(self):
         self._alive_cycles += 1
         if self._alive_cycles == len(self._group):
-            self.kill();
+            self.kill()
 
     def increase_lifetime(self):
         self._alive_cycles -= 1
@@ -90,7 +90,10 @@ class Snake():
             self._time_since_last_update = self._snake_speed
 
     def _grow(self):
-        self._pointsOccupied.increase_lifetime()
+        """     for part in self._pointsOccupied.sprites():
+            part.increase_lifetime()"""
+        pass
 
     def eat_fruit(self):
-        self._recalculate_fruit_pos()
+        self._board.remove_old_fruit_and_put_new(self)
+        self._grow()
