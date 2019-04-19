@@ -16,27 +16,33 @@ class RaspgierryPi:
             sys.exit(1)
         self._menu = Menu()
         self._clock = pygame.time.Clock()
+        self._keep_running = True
         
     def run(self):
-        time_since_last_update = 0
-        while self._menu.is_running():
-            self._menu.process_events(self._joystick)
-            time_since_last_update += self._clock.tick()
-            while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
-                time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
+        while self._keep_running:
+            time_since_last_update = 0
+            while self._menu.is_running():
                 self._menu.process_events(self._joystick)
-                self._menu.update()
-            self._menu.render(self._window)
-
-        game = self._menu.get_current_game()
-        if game:
-            hud = Hud(game)
-            hud.render(self._window)
-            while hud.is_running():
-                hud.process_events(self._joystick)
                 time_since_last_update += self._clock.tick()
                 while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
-                    hud.process_events(self._joystick)
-                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
+                    self._menu.process_events(self._joystick)
+                    self._menu.update()
+                self._menu.render(self._window)
+
+            game = self._menu.get_current_game()
+            if game:
+                hud = Hud(game)
                 hud.render(self._window)
+                while hud.is_running():
+                    hud.process_events(self._joystick)
+                    time_since_last_update += self._clock.tick()
+                    while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
+                        time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
+                        hud.process_events(self._joystick)
+                        hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
+                    hud.render(self._window)
+                self._keep_running = True
+                self.__init__()
+            else:
+                self._keep_running = False

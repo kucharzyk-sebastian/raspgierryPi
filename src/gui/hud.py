@@ -1,7 +1,5 @@
-from src.resources.font_rsc import *
-from src.helpers.text import *
-from src.gui.clipped_rect import *
-
+from src.gui.page import *
+from src.controls.joystick import *
 
 class Hud:
     SIDE_MARGIN = (LayoutRsc.WINDOW_WIDTH - LayoutRsc.GAME_AREA_WIDTH) / 2
@@ -18,6 +16,9 @@ class Hud:
 
     GAME_RECT_HEIGHT = LayoutRsc.GAME_AREA_HEIGHT + BORDER_WIDTH * 2
 
+    GAME_OVER_RECT_WIDTH = LayoutRsc.GAME_AREA_WIDTH - SIDE_MARGIN
+    GAME_OVER_RECT_HEIGHT = LayoutRsc.GAME_AREA_HEIGHT / 2
+
     def __init__(self, game):
         self._game = game
         self._lives = game.get_lives()
@@ -33,21 +34,34 @@ class Hud:
         self._heart_texture = pygame.transform.scale(pygame.image.load(Hud.HEART_TEXTURE_PATH), Hud.HEART_TEXTURE_SIZE)
         self._game_surface = pygame.Surface((LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT),
                                             pygame.SRCALPHA, 32)
+        self._game_over_page = Page(header="GAME OVER", buttons=[(ButtonType.TEXT_WIDE, ("BACK", "BACK"))])
+        self._is_running = True
 
     def is_running(self):
-        return self._game.is_running()
+        return self._is_running
 
     def process_events(self, joystick):
-        self._game.process_events(joystick)
+        if self._game.is_running():
+            self._game.process_events(joystick)
+        else:
+            for event in pygame.event.get():
+                if event.type in {JOYBUTTONUP, JOYBUTTONDOWN}:
+                    joystick.process_event(event)
+                    if joystick.is_a_pressed():
+                        self._is_running = False
 
     def update(self, delta_time):
-        self._game.update(delta_time)
-        self._points = self._game.get_points()
-        self._lives = self._game.get_lives()
+        if self._game.is_running():
+            self._game.update(delta_time)
+            self._points = self._game.get_points()
+            self._lives = self._game.get_lives()
 
     def render(self, window):
-        self._render_top_bar(window)
-        self._render_game_area(window)
+        if self._game.is_running():
+            self._render_top_bar(window)
+            self._render_game_area(window)
+        else:
+            self._game_over_page.render(window)
         pygame.display.update()
 
     def _render_top_bar(self, window):
