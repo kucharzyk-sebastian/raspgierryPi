@@ -26,6 +26,8 @@ class ButtonId(Enum):
     HARD = 14
     ENTER_GAME = 15
     EXIT = 16
+    BEST_SCORES = 17
+    CREDITS = 18
 
 
 class PageId(Enum):
@@ -70,15 +72,15 @@ class Menu:
                                             (None, {ButtonId.SOUND_ON: "SOUND ON", ButtonId.SOUND_OFF: "SOUND OFF"})),
                                            (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
             PageId.SCORES: Page(header="BEST SCORES",
-                                buttons=[(ButtonType.TEXT_AREA, (ButtonId.HARD, text_area_lines)),
+                                buttons=[(ButtonType.TEXT_AREA, (ButtonId.BEST_SCORES, text_area_lines)),
                                          (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
             PageId.ABOUT: Page(header="CREDITS",
                                buttons=[(ButtonType.TEXT_AREA,
-                                         (ButtonId.HARD, ["Jakub Gros", "Sebastian Kucharzyk", "Mateusz Olejarz"])),
+                                         (ButtonId.CREDITS, ["Jakub Gros", "Sebastian Kucharzyk", "Mateusz Olejarz"])),
                                         (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
             PageId.HELP: Page(header="HELP",
                               buttons=[(ButtonType.TEXT_AREA,
-                                        (ButtonId.HARD, ["Go left: left arrow", "Go right: right arrow",
+                                        (ButtonId.CONTROLS, ["Go left: left arrow", "Go right: right arrow",
                                                          "Go up: up arrow", "Go down: down arrow", "Action: A button"])),
                                        (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
         }
@@ -212,11 +214,11 @@ class Menu:
             self._settings.game_type = GameType.Snake
 
         if ButtonId.EASY in choices:
-            self._settings.Level = GameLevel.Easy
+            self._settings.game_level = GameLevel.Easy
         elif ButtonId.MEDIUM in choices:
-            self._settings.Level = GameLevel.Medium
-        if ButtonId.HARD in choices:
-            self._settings.Level = GameLevel.Hard
+            self._settings.game_level = GameLevel.Medium
+        elif ButtonId.HARD in choices:
+            self._settings.game_level = GameLevel.Hard
 
     def render(self, window):
         self._pages[self._active_page_id].render(window)
