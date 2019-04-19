@@ -33,7 +33,7 @@ class Board():
         return self._fruit
 
     def get_rect(self, x, y):
-        return self._grid[x][y]
+        return self._grid[x%self._fields_horizontally][y%self._fields_vertically]
 
     def get_field_size(self):
         return (self._field_width, self._field_height)

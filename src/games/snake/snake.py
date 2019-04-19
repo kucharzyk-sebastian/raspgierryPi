@@ -84,8 +84,7 @@ class Snake():
     def update(self, delta_time):
         self._time_since_last_update -= delta_time
         if (self._time_since_last_update <= 0):
-            for point in self._pointsOccupied.sprites():
-                point.update()
+            self._pointsOccupied.update()
             self.move()
 
 
