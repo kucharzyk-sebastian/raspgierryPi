@@ -3,7 +3,7 @@ from src.gui.hud import *
 
 
 class RaspgierryPi:
-    TIME_PER_FRAME = 0.1
+    TIME_PER_FRAME = 0.1 * 1000
 
     def __init__(self):
         pygame.init()
@@ -22,7 +22,7 @@ class RaspgierryPi:
         while self._menu.is_running():
             self._menu.process_events(self._joystick)
             time_since_last_update += self._clock.tick()
-            while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+            while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                 time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                 self._menu.process_events(self._joystick)
                 self._menu.update()
@@ -35,8 +35,8 @@ class RaspgierryPi:
             while hud.is_running():
                 hud.process_events(self._joystick)
                 time_since_last_update += self._clock.tick()
-                while time_since_last_update > RaspgierryPi.TIME_PER_FRAME:
+                while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
-                    hud.update(time_since_last_update * 0.001)
+                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
                 hud.render(self._window)
