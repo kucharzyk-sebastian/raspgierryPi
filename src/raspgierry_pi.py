@@ -3,7 +3,7 @@ from src.gui.hud import *
 
 
 class RaspgierryPi:
-    TIME_PER_FRAME = 0.1 * 1000
+    TIME_PER_FRAME = 0.1 * 1000 #TODO jagros: what does those values means
 
     def __init__(self):
         pygame.init()
@@ -19,6 +19,7 @@ class RaspgierryPi:
         
     def run(self):
         time_since_last_update = 0
+        """
         while self._menu.is_running():
             self._menu.process_events(self._joystick)
             time_since_last_update += self._clock.tick()
@@ -27,8 +28,9 @@ class RaspgierryPi:
                 self._menu.process_events(self._joystick)
                 self._menu.update()
             self._menu.render(self._window)
+        """
 
-        game = self._menu.get_current_game()
+        game = SnakeGame(GameLevel.Easy, True) #self._menu.get_current_game()
         if game:
             hud = Hud(game)
             hud.render(self._window)
@@ -38,5 +40,5 @@ class RaspgierryPi:
                 while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
-                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
+                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001) #TODO jagros why 0.001
                 hud.render(self._window)
