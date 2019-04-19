@@ -35,6 +35,7 @@ class SnakePart(pygame.sprite.Sprite):
 class Snake():
     def __init__(self, speed, board):
         self._direction = "up"
+        self._prev_direction = self._direction
         self._isAlive = True
         self._pointsOccupied = sprite.Group()
         self._head = {"x": 0, "y": 0}
@@ -48,7 +49,12 @@ class Snake():
         allowed_directions = ["up", "down", "right", "left"]
         if direction not in allowed_directions:
             raise Exception("not allowed direction")
-        self._direction = direction
+
+        # if length greater than 1 snake can't make moves in opposite way
+        if len(self._pointsOccupied) == 1 or self.get_opposite_direction(self._direction) != direction:
+            self._prev_direction = self._direction
+            self._direction = direction
+
 
     def get_occupied_points(self):
         return self._pointsOccupied
@@ -98,3 +104,12 @@ class Snake():
     def eat_fruit(self):
         self._board.remove_old_fruit_and_put_new(self) #ten chuj zwraca dwa razy true jak wpierdoli owoca @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         self._grow()
+
+    def get_opposite_direction(self, direction):
+        opposite_directions = {
+            "up": "down",
+            "down": "up",
+            "right": "left",
+            "left": "right",
+        }
+        return opposite_directions[direction]
