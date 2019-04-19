@@ -13,3 +13,4 @@ class GalaxianRsc:
     SPECIAL_ENEMY_DEATH = pygame.mixer.Sound(SoundRsc.sounds_path + 'galaxian/special_enemy_death.wav')
     PROJECTILE_LAUNCH = pygame.mixer.Sound(SoundRsc.sounds_path + 'galaxian/projectile_launch.wav')
     ENEMY_GETS_CLOSER = pygame.mixer.Sound(SoundRsc.sounds_path + 'galaxian/enemy_gets_closer.wav')
+    GAME_OVER = pygame.mixer.Sound(SoundRsc.sounds_path + 'menu/game_over.wav')
