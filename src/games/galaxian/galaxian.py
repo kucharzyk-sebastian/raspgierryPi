@@ -74,6 +74,7 @@ class Galaxian(Game):
                 self._lives -= 1
                 if self._lives == 0:
                     self._is_running = False
+                    self._play_sound_if_needed(GalaxianRsc.GAME_OVER)
                 else:
                     self._enemies.empty()
                     self._projectiles.empty()
