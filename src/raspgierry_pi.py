@@ -16,10 +16,10 @@ class RaspgierryPi:
             sys.exit(1)
         self._menu = Menu()
         self._clock = pygame.time.Clock()
-        self._keep_running = True
+        self._is_running = True
         
     def run(self):
-        while self._keep_running:
+        while self._is_running:
             time_since_last_update = 0
             while self._menu.is_running():
                 self._menu.process_events(self._joystick)
@@ -42,7 +42,7 @@ class RaspgierryPi:
                         hud.process_events(self._joystick)
                         hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
                     hud.render(self._window)
-                self._keep_running = True
+                self._is_running = True
                 self.__init__()
             else:
-                self._keep_running = False
+                self._is_running = False
