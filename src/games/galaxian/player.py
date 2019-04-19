@@ -11,6 +11,8 @@ class Player(pygame.sprite.Sprite):
     TRANSPARENT_TEXTURE.fill((0, 0, 0, 0))
     RESPAWN_TIME_SEC = 2
     LAUNCH_COOLDOWN_SEC = 0.35
+    SECOND = 1000
+    BLINK_TIME = 0.4 * SECOND
 
     def __init__(self, x, y, projectiles, is_sound_on):
         pygame.sprite.Sprite.__init__(self)
@@ -41,7 +43,10 @@ class Player(pygame.sprite.Sprite):
         if self._is_respawning:
             self._respawn_elapsed_time += delta_time
             self.rect.center = (self._initial_x, self._initial_y)
-            self.image = Player.TRANSPARENT_TEXTURE if self._respawn_elapsed_time * 1000 % 400 < 200 else Player.TEXTURE
+            if self._respawn_elapsed_time * Player.SECOND % Player.BLINK_TIME < Player.BLINK_TIME / 2:
+                self.image = Player.TRANSPARENT_TEXTURE
+            else:
+                self.image = Player.TEXTURE
             if self._respawn_elapsed_time > Player.RESPAWN_TIME_SEC:
                 self.image = Player.TEXTURE
                 self._is_respawning = False

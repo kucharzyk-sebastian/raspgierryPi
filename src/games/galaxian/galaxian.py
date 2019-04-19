@@ -26,11 +26,11 @@ class Galaxian(Game):
         self._first_enemies_row_y = 0
 
     def _add_row_of_enemies(self):
-        num_of_enemies = 7
+        enemies_in_row = 7
         enemies = []
-        special_idx = random.randrange(0, num_of_enemies)
-        for i in range(num_of_enemies):
-            if i == special_idx:
+        special_enemy_idx = random.randrange(0, enemies_in_row)
+        for i in range(enemies_in_row):
+            if i == special_enemy_idx:
                 enemies.append(Enemy(Enemy.WIDTH/2 + i*Enemy.WIDTH, Enemy.HEIGHT / 2, True))
             else:
                 enemies.append(Enemy(Enemy.WIDTH/2 + i*Enemy.WIDTH, Enemy.HEIGHT / 2))
@@ -89,10 +89,6 @@ class Galaxian(Game):
 
     def process_events(self, joystick):
         for event in pygame.event.get():
-            # TODO sk: remove these lines when game ready
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                sys.exit(0)
-
             if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
                 joystick.process_event(event)
                 if joystick.is_a_pressed():
