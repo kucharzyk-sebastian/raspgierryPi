@@ -1,14 +1,9 @@
-import collections
-from random import randrange
-
 from src.resources.layout_rsc import *
 from src.resources.sound_rsc import *
 from src.games.game import *
 from src.controls.joystick import *
 import pygame
-import sys
 from src.settings import GameLevel
-
 
 class SnakePart(pygame.sprite.Sprite):
     PART_SIZE = (10, 10)
@@ -32,12 +27,12 @@ class SnakePart(pygame.sprite.Sprite):
 
 
 class Snake():
-    def __init__(self, starting_pos_x, starting_pos_y):
+    def __init__(self, starting_pos_x, starting_pos_y, speed):
         self._direction = "up"
         self._isAlive = True
         self._pointsOccupied = pygame.sprite.Group()
         self._head = SnakePart(self._pointsOccupied)
-        self._snake_speed = 0.5  # TODO jagros bind to game level like sebastian did
+        self._snake_speed = speed
         self._time_since_last_update = self._snake_speed
 
     def set_direction(self, direction):
@@ -79,9 +74,10 @@ class Snake():
 
 class SnakeGame(Game):
 
+    SPEEDS = {GameLevel.Easy: 0.5, GameLevel.Medium: 0.3, GameLevel.Hard: 0.1}
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
-        self._snake = Snake(LayoutRsc.GAME_AREA_WIDTH / 2, LayoutRsc.GAME_AREA_HEIGHT / 2)
+        self._snake = Snake(LayoutRsc.GAME_AREA_WIDTH / 2, LayoutRsc.GAME_AREA_HEIGHT / 2, SnakeGame.SPEEDS[self._level])
         self.update_counter = 0
 
     def process_events(self, joystick):
