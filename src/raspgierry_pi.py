@@ -1,8 +1,12 @@
 from src.gui.menu import *
 from src.gui.hud import *
+from src.helpers.files import *
+
 
 
 class RaspgierryPi:
+    SCORES_DB_PATH = "../scores"
+    SCORES_DB_FILENAME = "scores"
     TIME_PER_FRAME = 0.1 * 1000
 
     def __init__(self):
@@ -14,10 +18,14 @@ class RaspgierryPi:
         except pygame.error:
             print("Couldn't detect valid joystick")
             sys.exit(1)
-        self._menu = Menu()
+        try:
+            self._scores = Files.load_obj(RaspgierryPi.SCORES_DB_PATH, RaspgierryPi.SCORES_DB_FILENAME)
+        except FileNotFoundError:
+            self._scores = {GameType.Galaxian: [0, 0, 0], GameType.Racing: [0, 0, 0], GameType.Snake: [0, 0, 0]}
+        self._menu = Menu(self._scores)
         self._clock = pygame.time.Clock()
         self._is_running = True
-        
+
     def run(self):
         while self._is_running:
             time_since_last_update = 0
@@ -42,7 +50,16 @@ class RaspgierryPi:
                         hud.process_events(self._joystick)
                         hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
                     hud.render(self._window)
+                self.update_stats(game)
                 self._is_running = True
                 self.__init__()
             else:
                 self._is_running = False
+
+    def update_stats(self, game):
+        scores = self._scores[game.get_type()]
+        for i in range(len(scores)):
+            if game.get_points() > scores[i]:
+                scores.insert(i, game.get_points())
+                break
+        Files.save_obj(RaspgierryPi.SCORES_DB_PATH, self._scores, RaspgierryPi.SCORES_DB_FILENAME)
