@@ -39,7 +39,8 @@ class Board():
         return (self._field_width, self._field_height)
 
     def is_on_fruit_pos(self, rect):
-        return self._fruit.rect.colliderect(rect)
+        the_val = self._fruit.rect.colliderect(rect)
+        return the_val
 
     def remove_old_fruit_and_put_new(self, snake):
         while True:

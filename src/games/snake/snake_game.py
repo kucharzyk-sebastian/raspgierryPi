@@ -30,6 +30,7 @@ class SnakeGame(Game):
 
     def update(self, delta_time):
         self._snake.update(delta_time)
+        self._points = self._snake.get_snake_size()
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
@@ -40,8 +41,7 @@ class SnakeGame(Game):
     def is_running(self):
         return self._is_running
 
-    def get_points(self):  # TODO jagros: it's confusing, should be scoree
-        return self._points
+
 
     def get_lives(self):
         return self._lives

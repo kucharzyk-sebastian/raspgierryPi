@@ -21,17 +21,16 @@ class SnakePart(pygame.sprite.Sprite):
             self.rect.center = pos_center
         else:
             self.rect.center = board.get_middle().center
-        self._alive_cycles = 0
         self._group = belongs_to
+        self._alive_cycles_left = len(self._group)
 
     def update(self):
-        self._alive_cycles += 1
-        if self._alive_cycles == len(self._group):
+        self._alive_cycles_left -=1
+        if self._alive_cycles_left <= 0:
             self.kill()
 
     def increase_lifetime(self):
-        self._alive_cycles -= 1
-
+        self._alive_cycles_left += 1
 
 class Snake():
     def __init__(self, speed, board):
@@ -85,15 +84,18 @@ class Snake():
     def update(self, delta_time):
         self._time_since_last_update -= delta_time
         if (self._time_since_last_update <= 0):
-            self._pointsOccupied.update()
+            for point in self._pointsOccupied.sprites():
+                point.update()
             self.move()
+
+
+
             self._time_since_last_update = self._snake_speed
 
     def _grow(self):
-        """     for part in self._pointsOccupied.sprites():
-            part.increase_lifetime()"""
-        pass
+        for part in self._pointsOccupied.sprites():
+            part.increase_lifetime()
 
     def eat_fruit(self):
-        self._board.remove_old_fruit_and_put_new(self)
+        self._board.remove_old_fruit_and_put_new(self) #ten chuj zwraca dwa razy true jak wpierdoli owoca @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         self._grow()

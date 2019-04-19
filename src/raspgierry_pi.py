@@ -41,4 +41,4 @@ class RaspgierryPi:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
                     hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001) #TODO jagros why 0.001
-                hud.render(self._window)
+                    hud.render(self._window) # TODO jagros indent left after debugging
