@@ -4,7 +4,7 @@ from src.games.snake.board import *
 from src.games.snake.snake import *
 from src.resources.layout_rsc import LayoutRsc
 from src.resources.sound_rsc import *
-from src.settings import GameLevel, SnakeSettings
+from src.settings import SnakeSettings
 
 
 class SnakeGame(Game):

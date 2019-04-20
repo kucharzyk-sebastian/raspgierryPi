@@ -1,8 +1,6 @@
-import pygame
 from pygame import sprite
 from src.games.snake.snake_part import SnakePart
 from src.resources.snake_game_resources import SnakeGameResources
-from src.resources.sound_rsc import SoundRsc
 from src.settings import SnakeSettings
 
 
@@ -104,7 +102,8 @@ class Snake():
     def has_collided_with_itself(self):
         body_rect_list = [x.rect for x in self.get_occupied_points().sprites()]
         head_rect = self.get_head_rect()
-        body_rect_list.remove(head_rect)
+        if head_rect in body_rect_list:
+            body_rect_list.remove(head_rect)
         has_collided = head_rect.collidelist(body_rect_list) >= 0
         if has_collided:
             self._play_sound_if_needed(SnakeGameResources.PLAYER_DEATH_SOUND_PATH)

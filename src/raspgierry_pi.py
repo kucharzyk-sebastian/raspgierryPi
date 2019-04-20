@@ -29,7 +29,7 @@ class RaspgierryPi:
                 self._menu.update()
             self._menu.render(self._window)
 
-        game = SnakeGame(GameLevel.Hard, True) #self._menu.get_current_game()
+        game = self._menu.get_current_game()
         if game:
             hud = Hud(game)
             hud.render(self._window)
