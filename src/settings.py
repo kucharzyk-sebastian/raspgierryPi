@@ -12,17 +12,6 @@ class GameLevel(Enum):
     Medium = 1
     Hard = 2
 
-class SnakeSettings:
-    SNAKE_SPEEDS = {
-        GameLevel.Easy: 0.5,
-        GameLevel.Medium: 0.3,
-        GameLevel.Hard: 0.1
-    }
-    BOARD_FIELDS_HORIZONTALLY = 20
-    BOARD_FIELDS_VERTICALLY = 20
-    SNAKE_INITIAL_DIRECTION = "up"
-    SNAKE_INITIAL_POSITION = {"x": 0, "y": 0}
-
 class Settings:
     def __init__(self, is_sound_on=True, game=GameType.Galaxian, game_level=GameLevel.Easy):
         self.is_sound_on = is_sound_on

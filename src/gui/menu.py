@@ -5,7 +5,7 @@ from src.settings import *
 from src.controls.joystick import *
 from src.games.galaxian.galaxian import *
 from src.games.racing.racing import *
-from src.games.snake.snake_game import *
+from src.games.snake.snake import *
 
 
 class ButtonId(Enum):
@@ -122,7 +122,7 @@ class Menu:
     def move_right(self):
         self._is_moving.right = True
 
-    def get_into(self): #TODO jagros: name is confusing, looks like it returns something
+    def get_into(self):
         self._is_moving.into = True
 
     def update(self):
@@ -188,7 +188,7 @@ class Menu:
                 elif self._settings.game_type == GameType.Racing:
                     self._current_game = Racing(self._settings.game_level, self._settings.is_sound_on)
                 elif self._settings.game_type == GameType.Snake:
-                    self._current_game = SnakeGame(self._settings.game_level, self._settings.is_sound_on)
+                    self._current_game = Snake(self._settings.game_level, self._settings.is_sound_on)
                 else:
                     raise NotImplementedError("There is no game for " + str(self._settings.game_type))
                 self._is_running = False

@@ -3,7 +3,7 @@ from src.gui.hud import *
 
 
 class RaspgierryPi:
-    TIME_PER_FRAME = 0.1 * 1000 #TODO jagros: what does those values means
+    TIME_PER_FRAME = 0.1 * 1000
 
     def __init__(self):
         pygame.init()
@@ -39,5 +39,5 @@ class RaspgierryPi:
                 while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                     time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                     hud.process_events(self._joystick)
-                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001) #TODO jagros why 0.001
+                    hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
                 hud.render(self._window)

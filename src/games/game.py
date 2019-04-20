@@ -19,7 +19,7 @@ class Game:
     def is_running(self):
         return self._is_running
 
-    def get_points(self): #TODO jagros should be score, points are confusing
+    def get_points(self):
         return self._points
 
     def get_lives(self):
