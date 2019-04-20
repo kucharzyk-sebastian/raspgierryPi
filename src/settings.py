@@ -12,7 +12,6 @@ class GameLevel(Enum):
     Medium = 1
     Hard = 2
 
-
 class Settings:
     def __init__(self, is_sound_on=True, game=GameType.Galaxian, game_level=GameLevel.Easy):
         self.is_sound_on = is_sound_on
