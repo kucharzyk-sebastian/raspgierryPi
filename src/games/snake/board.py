@@ -18,6 +18,10 @@ class Board():
         self._fruit.rect.center = self.get_middle().center
 
 
+    def get_middle(self):
+        return self._grid[int(self._fields_horizontally / 2)][int(self._fields_vertically / 2)]
+
+
     def get_fruit(self):
         return self._fruit
 
@@ -41,7 +45,4 @@ class Board():
             if pygame.sprite.spritecollideany(new_fruit, snake.get_occupied_points()) == None:
                 self._fruit.rect = new_fruit.rect
                 return
-
-
-    def get_middle(self):
-        return self._grid[int(self._fields_horizontally / 2)][int(self._fields_vertically / 2)]
+            

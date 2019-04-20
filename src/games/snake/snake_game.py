@@ -32,14 +32,14 @@ class SnakeGame(Game):
                     self._snake.set_direction("right")
 
 
-    def has_collided_with_itself(self):
-        return self._snake.has_collided_with_itself()
-
-
     def update(self, delta_time):
         self._snake.update(delta_time)
         self._points = self._snake.get_snake_size() - 1 # start size of snake is 1
-        self._is_running = not self.has_collided_with_itself()
+        self._is_running = not self._has_game_finished()
+
+
+    def _has_game_finished(self):
+        return self._snake.has_collided_with_itself()
 
 
     def render(self, window):
