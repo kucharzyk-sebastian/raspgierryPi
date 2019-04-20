@@ -11,8 +11,8 @@ import random
 class Galaxian(Game):
     SPEEDS = {GameLevel.Easy: 10, GameLevel.Medium: 20, GameLevel.Hard: 40}
 
-    def __init__(self, level, is_sound_on):
-        Game.__init__(self, level, is_sound_on)
+    def __init__(self, level, is_sound_on, game_type):
+        Game.__init__(self, level, is_sound_on, game_type)
         self._points = 0
         self._lives = 3
         self._enemies = pygame.sprite.Group()

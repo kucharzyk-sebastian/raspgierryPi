@@ -1,6 +1,7 @@
 
 class Game:
-    def __init__(self, level, is_sound_on):
+    def __init__(self, level, is_sound_on, game_type):
+        self._game_type = game_type
         self._level = level
         self._is_sound_on = is_sound_on
         self._is_running = True
@@ -24,3 +25,6 @@ class Game:
 
     def get_lives(self):
         return self._lives
+
+    def get_type(self):
+        return self._game_type

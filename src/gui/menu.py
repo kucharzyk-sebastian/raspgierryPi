@@ -41,14 +41,7 @@ class PageId(Enum):
 
 
 class Menu:
-    def __init__(self):
-        # TODO sk: Remove below 4 lines and load scores from DB
-        snake1 = "1053 points Seba"
-        snake2 = "900 points Kuba"
-        snake3 = "123 points Mati"
-        text_area_lines = ["Galaxian:", snake1, snake2, snake3,
-                           "Racing:", snake1, snake2, snake3,
-                           "Snake:", snake1, snake2, snake3]
+    def __init__(self, scores):
 
         self._pages = {
             PageId.DEFAULT: Page(header="Raspgierry PI",
@@ -72,7 +65,19 @@ class Menu:
                                             (None, [(ButtonId.SOUND_ON, "SOUND ON"), (ButtonId.SOUND_OFF, "SOUND OFF")])),
                                            (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
             PageId.SCORES: Page(header="BEST SCORES",
-                                buttons=[(ButtonType.TEXT_AREA, (ButtonId.BEST_SCORES, text_area_lines)),
+                                buttons=[(ButtonType.TEXT_AREA, (ButtonId.BEST_SCORES,
+                                                                 ["Galaxian:",
+                                                                  scores[GameType.Galaxian][0],
+                                                                  scores[GameType.Galaxian][1],
+                                                                  scores[GameType.Galaxian][2],
+                                                                  "Racing:",
+                                                                  scores[GameType.Racing][0],
+                                                                  scores[GameType.Racing][1],
+                                                                  scores[GameType.Racing][2],
+                                                                  "Snake:",
+                                                                  scores[GameType.Snake][0],
+                                                                  scores[GameType.Snake][1],
+                                                                  scores[GameType.Snake][2]])),
                                          (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
             PageId.ABOUT: Page(header="CREDITS",
                                buttons=[(ButtonType.TEXT_AREA,
@@ -186,11 +191,14 @@ class Menu:
         elif self._active_page_id == PageId.PLAY:
             if active_button_id == ButtonId.ENTER_GAME:
                 if self._settings.game_type == GameType.Galaxian:
-                    self._current_game = Galaxian(self._settings.game_level, self._settings.is_sound_on)
+                    self._current_game = Galaxian(self._settings.game_level, self._settings.is_sound_on,
+                                                  self._settings.game_type)
                 elif self._settings.game_type == GameType.Racing:
-                    self._current_game = Racing(self._settings.game_level, self._settings.is_sound_on)
+                    self._current_game = Racing(self._settings.game_level, self._settings.is_sound_on,
+                                                self._settings.game_type)
                 elif self._settings.game_type == GameType.Snake:
-                    self._current_game = Snake(self._settings.game_level, self._settings.is_sound_on)
+                    self._current_game = Snake(self._settings.game_level, self._settings.is_sound_on,
+                                               self._settings.game_type)
                 else:
                     raise NotImplementedError("There is no game for " + str(self._settings.game_type))
                 self._is_running = False
