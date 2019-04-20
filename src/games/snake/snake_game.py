@@ -11,7 +11,7 @@ class SnakeGame(Game):
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
         self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, 20, 20)
-        self._snake = Snake(SnakeGame.SPEEDS[self._level], self._board)
+        self._snake = Snake(SnakeGame.SPEEDS[self._level], self._board, is_sound_on)
         self.update_counter = 0
 
     def process_events(self, joystick):
@@ -29,11 +29,7 @@ class SnakeGame(Game):
                     self._snake.set_direction("right")
 
     def has_collided_with_itself(self):
-        sprites = self._snake.get_occupied_points().sprites()
-        body_rect_list = [x.rect for x in sprites]
-        head_rect = self._snake.get_head_rect()
-        body_rect_list.remove(head_rect)
-        return(head_rect.collidelist(body_rect_list) >= 0)
+        return self._snake.has_collided_with_itself()
 
     def update(self, delta_time):
         self._snake.update(delta_time)

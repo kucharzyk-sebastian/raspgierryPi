@@ -2,6 +2,7 @@ from pygame import sprite
 import pygame
 
 from src.resources.layout_rsc import LayoutRsc
+from src.resources.sound_rsc import SoundRsc
 
 
 class SnakePart(pygame.sprite.Sprite):
@@ -33,7 +34,11 @@ class SnakePart(pygame.sprite.Sprite):
         self._alive_cycles_left += 1
 
 class Snake():
-    def __init__(self, speed, board):
+
+    EAT_FRUIT = pygame.mixer.Sound(SoundRsc.sounds_path + 'snake/eat_fruit.wav')
+    PLAYER_DEATH = pygame.mixer.Sound(SoundRsc.sounds_path + 'snake/player_death.wav')
+
+    def __init__(self, speed, board, is_sound_on):
         self._direction = "up"
         self._prev_direction = self._direction
         self._isAlive = True
@@ -43,6 +48,7 @@ class Snake():
         self._time_since_last_update = self._snake_speed
         self._board = board
         SnakePart(self._pointsOccupied, self._board) #makes head
+        self._is_sound_on = is_sound_on
 
 
     def get_head_rect(self):
@@ -76,6 +82,7 @@ class Snake():
     def eat_fruit(self):
         self._board.remove_old_fruit_and_put_new(self)
         self._grow()
+        self.play_sound_if_needed(Snake.EAT_FRUIT)
 
     def move(self):
         new_head_rect = self.calculate_new_head_rect()
@@ -107,6 +114,7 @@ class Snake():
     def eat_fruit(self):
         self._board.remove_old_fruit_and_put_new(self)
         self._grow()
+        self.play_sound_if_needed(Snake.EAT_FRUIT)
 
     def get_opposite_direction(self, direction):
         opposite_directions = {
@@ -116,3 +124,17 @@ class Snake():
             "left": "right",
         }
         return opposite_directions[direction]
+
+    def has_collided_with_itself(self):
+        sprites = self.get_occupied_points().sprites()
+        body_rect_list = [x.rect for x in sprites]
+        head_rect = self.get_head_rect()
+        body_rect_list.remove(head_rect)
+        has_collided = head_rect.collidelist(body_rect_list) >= 0
+        if has_collided:
+            self.play_sound_if_needed(Snake.PLAYER_DEATH)
+        return has_collided
+
+    def play_sound_if_needed(self, sound):
+        if self._is_sound_on:
+            sound.play()
