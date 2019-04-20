@@ -10,7 +10,7 @@ class MultiChoiceButton(Button):
         Button.__init__(self, pos_x, pos_y, width, height, id)
         self._current_choice = 0
         self._choices = []
-        for choice_id, choice_label in choices.items():
+        for choice_id, choice_label in choices:
             try:
                 img = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'buttons/' + choice_label + '.png')
             except pygame.error:
