@@ -1,18 +1,21 @@
-from src.resources.sound_rsc import *
-from src.games.game import *
 from src.controls.joystick import *
-from src.settings import GameLevel
+from src.games.game import *
 from src.games.snake.board import *
 from src.games.snake.snake import *
+from src.resources.layout_rsc import LayoutRsc
+from src.resources.sound_rsc import *
+from src.settings import GameLevel, SnakeSettings
+
 
 class SnakeGame(Game):
-
-    SPEEDS = {GameLevel.Easy: 0.5, GameLevel.Medium: 0.3, GameLevel.Hard: 0.1}
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
-        self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, 20, 20)
-        self._snake = Snake(SnakeGame.SPEEDS[self._level], self._board, is_sound_on)
-        self.update_counter = 0
+        self._board = Board(LayoutRsc.GAME_AREA_WIDTH,
+                            LayoutRsc.GAME_AREA_HEIGHT,
+                            SnakeSettings.BOARD_FIELDS_HORIZONTALLY,
+                            SnakeSettings.BOARD_FIELDS_VERTICALLY)
+        self._snake = Snake(SnakeSettings.SNAKE_SPEEDS[level], self._board, is_sound_on)
+
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -28,19 +31,18 @@ class SnakeGame(Game):
                 if joystick.is_arrow_rightdir_pressed():
                     self._snake.set_direction("right")
 
+
     def has_collided_with_itself(self):
         return self._snake.has_collided_with_itself()
 
+
     def update(self, delta_time):
         self._snake.update(delta_time)
-        self._points = self._snake.get_snake_size() - 1 #start size of snake is 1
-        if self.has_collided_with_itself():
-            self._is_running = False
-
+        self._points = self._snake.get_snake_size() - 1 # start size of snake is 1
+        self._is_running = not self.has_collided_with_itself()
 
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
         self._snake.draw(window)
         window.blit(self._board.get_fruit().image, self._board.get_fruit().rect)
-
