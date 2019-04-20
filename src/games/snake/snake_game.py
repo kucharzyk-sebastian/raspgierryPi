@@ -28,20 +28,23 @@ class SnakeGame(Game):
                 if joystick.is_arrow_rightdir_pressed():
                     self._snake.set_direction("right")
 
+    def has_collided_with_itself(self):
+        sprites = self._snake.get_occupied_points().sprites()
+        body_rect_list = [x.rect for x in sprites]
+        head_rect = self._snake.get_head_rect()
+        body_rect_list.remove(head_rect)
+        return(head_rect.collidelist(body_rect_list) >= 0)
+
     def update(self, delta_time):
         self._snake.update(delta_time)
-        self._points = self._snake.get_snake_size()
+        self._points = self._snake.get_snake_size() - 1 #start size of snake is 1
+        if self.has_collided_with_itself():
+            self._is_running = False
+
+
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
         self._snake.draw(window)
         window.blit(self._board.get_fruit().image, self._board.get_fruit().rect)
 
-
-    def is_running(self):
-        return self._is_running
-
-
-
-    def get_lives(self):
-        return self._lives

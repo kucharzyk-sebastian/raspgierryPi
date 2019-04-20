@@ -45,6 +45,9 @@ class Snake():
         SnakePart(self._pointsOccupied, self._board) #makes head
 
 
+    def get_head_rect(self):
+        return self._board.get_rect(self._head['x'], self._head['y'])
+
     def set_direction(self, direction):
         allowed_directions = ["up", "down", "right", "left"]
         if direction not in allowed_directions:
@@ -102,7 +105,7 @@ class Snake():
             part.increase_lifetime()
 
     def eat_fruit(self):
-        self._board.remove_old_fruit_and_put_new(self) #ten chuj zwraca dwa razy true jak wpierdoli owoca @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        self._board.remove_old_fruit_and_put_new(self)
         self._grow()
 
     def get_opposite_direction(self, direction):
