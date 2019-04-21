@@ -43,26 +43,28 @@ class Player:
     IMAGE = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'racing/player.png')
     def __init__(self, board, roadway_width):
         self._part_size = (int(roadway_width*0.7), 70)
-        self._image = pygame.transform.scale(Player.IMAGE, self._part_size)
-        self._rect = self._image.get_rect()
+        self.image = pygame.transform.scale(Player.IMAGE, self._part_size)
+        self.rect = self.image.get_rect()
 
         self._board = board
         self._car_y_pos = self._board.get_amount_of_fields_vertically()-3
-        self._rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
+        self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
 
     def render(self, window):
-        window.blit(self._image, self._rect)
+        window.blit(self.image, self.rect)
 
     def update(self, delta_time):
         pass
 
     def take_roadway(self, roadway):
         if roadway == "left":
-            self._rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
+            self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
         elif roadway == "right":
-            self._rect.center = self._board.get_board_field_rect(Player.RIGHT_ROADWAY, self._car_y_pos).center
+            self.rect.center = self._board.get_board_field_rect(Player.RIGHT_ROADWAY, self._car_y_pos).center
         else:
             raise Exception("invalid roadway")
+
+
 
 
 class Racing(Game):
@@ -95,7 +97,11 @@ class Racing(Game):
         self._group_of_enemies.draw(window)
 
     def is_running(self):
-        return self._is_running
+        return self._has_player_collided()
+
+    def _has_player_collided(self):
+        list_of_enemies_rect = [x.rect for x in self._group_of_enemies.sprites()]
+        return self._player.rect.collidelist(list_of_enemies_rect)
 
     def get_points(self):
         return self._points
