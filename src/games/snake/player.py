@@ -17,6 +17,7 @@ class Player:
         self._board = board
         self._is_sound_on = is_sound_on
         self._create_body_part()  # makes head of snake
+        self._fruits_eaten = 0
 
     def _create_body_part(self, center_of_rect=None):
         if center_of_rect:
@@ -58,6 +59,10 @@ class Player:
         self._board.remove_old_fruit_and_put_new(self)
         self._grow()
         self._play_sound_if_needed(SnakeGameResources.EAT_FRUIT_SOUND_PATH)
+        self._fruits_eaten += 1
+
+    def get_fruits_eaten(self):
+        return self._fruits_eaten
 
     def _calculate_new_head_rect(self):
         if self._direction == "left":
@@ -102,3 +107,6 @@ class Player:
     def _play_sound_if_needed(self, sound):
         if self._is_sound_on:
             sound.play()
+
+    def reset(self):
+        self._pointsOccupied.empty()
