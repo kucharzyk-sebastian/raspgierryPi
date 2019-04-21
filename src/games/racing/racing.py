@@ -18,6 +18,12 @@ class Racing(Game):
         GameLevel.Medium : 0.2,
         GameLevel.Hard : 0.1,
     }
+
+    GAME_SPEEDS_SCORE_BONUS = {
+        GameLevel.Easy : 1,
+        GameLevel.Medium : 2,
+        GameLevel.Hard : 3,
+    }
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
         self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, 2, 20)
@@ -26,6 +32,8 @@ class Racing(Game):
         self._group_of_enemies = sprite.Group()
         self._game_speed = Racing.GAME_SPEEDS[level]
         self._time_since_last_update = self._game_speed
+        self._level = level
+        self._points_as_float = 0.0
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -43,6 +51,8 @@ class Racing(Game):
             self._group_of_enemies.update()
             self._create_enemy_if_possible()
             self._time_since_last_update = self._game_speed
+            self._points_as_float += 1/2 * Racing.GAME_SPEEDS_SCORE_BONUS[self._level]
+            self._points = int(self._points_as_float)
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
