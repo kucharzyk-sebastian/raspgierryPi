@@ -56,6 +56,7 @@ class Racing(Game):
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
+        self._draw_road_lines(window)
         self._player.render(window)
         self._group_of_enemies.draw(window)
 
@@ -76,5 +77,15 @@ class Racing(Game):
         if len(self._group_of_enemies) == 0:
             roadway_to_take = randrange(1)
             new_enemy = Enemy(self._group_of_enemies, self._board, self._roadway_width, roadway_to_take)
+
+    def _draw_road_lines(self, window):
+        draw.line(window, (255, 255, 255), (15, 5), (15, LayoutRsc.GAME_AREA_HEIGHT - 5), 10)
+        draw.line(window, (255, 255, 255), (LayoutRsc.GAME_AREA_WIDTH - 15, 5),
+                  (LayoutRsc.GAME_AREA_WIDTH - 15, LayoutRsc.GAME_AREA_HEIGHT - 5), 10)
+
+        middle = LayoutRsc.GAME_AREA_WIDTH / 2
+        for y in range(LayoutRsc.GAME_AREA_HEIGHT):
+            if int(y / 10) % 2 == 0:
+                draw.line(window, (255, 255, 255), (middle, y), (middle, y), 10)
 
 

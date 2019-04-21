@@ -9,7 +9,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def __init__(self, group_of_enemies, board, roadway_width, initial_roadway):
         pygame.sprite.Sprite.__init__(self, group_of_enemies)
-        self._part_size = (int(roadway_width * 0.7), 70)
+        self._part_size = (int(roadway_width * 0.3), 70)
         self.image = pygame.transform.scale(Enemy.IMAGE, self._part_size)
         self.rect = self.image.get_rect()
         self._roadway = initial_roadway

@@ -9,7 +9,7 @@ class Player:
 
     IMAGE = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'racing/player.png')
     def __init__(self, board, roadway_width):
-        self._part_size = (int(roadway_width*0.7), 70)
+        self._part_size = (int(roadway_width * 0.3), 70)
         self.image = pygame.transform.scale(Player.IMAGE, self._part_size)
         self.rect = self.image.get_rect()
 
