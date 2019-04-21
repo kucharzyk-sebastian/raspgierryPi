@@ -9,9 +9,12 @@ from src.games.racing.enemy import Enemy
 from src.games.racing.player import Player
 from src.games.racing.settings import Settings
 from src.resources.layout_rsc import LayoutRsc
+from src.resources.sound_rsc import SoundRsc
 
 
 class Racing(Game):
+
+    CRASH_SOUND = pygame.mixer.Sound(SoundRsc.sounds_path + 'racing/crash.wav')
 
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
@@ -104,3 +107,8 @@ class Racing(Game):
     def _die(self):
         self._lives -= 1
         self._group_of_enemies.empty()
+        self._play_sound_if_needed(Racing.CRASH_SOUND)
+
+    def _play_sound_if_needed(self, sound):
+        if self._is_sound_on:
+            sound.play()
