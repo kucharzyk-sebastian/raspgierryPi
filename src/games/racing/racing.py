@@ -3,6 +3,9 @@ import pygame
 from src.games.game import *
 from src.resources.layout_rsc import LayoutRsc
 from pygame import *
+
+from random import randrange
+
 class Board():
 
     FIELDS_OCCUPIED_BY_CAR = 4
@@ -68,6 +71,9 @@ class Racing(Game):
         self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, 2, 20)
         self._roadway_width = LayoutRsc.GAME_AREA_WIDTH/2
         self._player = Player(self._board, self._roadway_width)
+        self._group_of_enemies = sprite.Group()
+        self._create_enemy()
+
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -81,11 +87,12 @@ class Racing(Game):
 
     def update(self, delta_time):
         self._player.update(delta_time)
+        self._group_of_enemies.update(delta_time)
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
         self._player.render(window)
-
+        self._group_of_enemies.draw(window)
 
     def is_running(self):
         return self._is_running
@@ -95,3 +102,38 @@ class Racing(Game):
 
     def get_lives(self):
         return self._lives
+
+    def _create_enemy(self):
+        Enemy(self._group_of_enemies, self._board, self._roadway_width)
+
+
+class Enemy(pygame.sprite.Sprite):
+
+    IMAGE = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'racing/enemy.png')
+
+    def __init__(self, group_of_enemies, board, roadway_width):
+        pygame.sprite.Sprite.__init__(self, group_of_enemies)
+        self._part_size = (int(roadway_width * 0.7), 70)
+        self.image = pygame.transform.scale(Enemy.IMAGE, self._part_size)
+        self.rect = self.image.get_rect()
+
+        self._board = board
+        self._car_y_pos = 0
+        self._roadway = randrange(1)
+        self.rect.center = self._board.get_board_field_rect(self._roadway, self._car_y_pos).center
+
+    def draw(self, window):
+        window.blit(self.image, self.rect)
+
+    def _go_down(self):
+        self._car_y_pos += 1
+        self.rect.center = self._board.get_board_field_rect(self._roadway, self._car_y_pos).center
+
+    def update(self, delta_time):
+        if self._has_collided():
+            self.kill()
+        else:
+            self._go_down()
+
+    def _has_collided(self):
+        pass
