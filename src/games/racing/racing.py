@@ -26,6 +26,7 @@ class Racing(Game):
                                        (LayoutRsc.GAME_AREA_WIDTH, 2 * Settings.CAR_SIZE[1]))
         self._points_earned_per_update = 1 / 2 * Settings.GAME_SPEEDS_SCORE_BONUS[self._level]
         self._is_running = True
+        self._lives = 3
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -39,7 +40,14 @@ class Racing(Game):
     def update(self, delta_time):
         self._time_since_last_update -= delta_time
         if self._time_since_last_update <= 0:
-            self._is_running = not self._has_player_collided()
+
+            if self._has_player_collided():
+                self._die()
+
+
+            if self._lives == -1:
+                self._is_running = False
+
             self._player.update()
             self._create_enemy_if_possible()
             self._group_of_enemies.update()
@@ -92,3 +100,7 @@ class Racing(Game):
         for y in range(LayoutRsc.GAME_AREA_HEIGHT):
             if int(y / Settings.ROADLINE_LINE_WIDTH) % 2 == 0:
                 draw.line(window, Settings.WHITE, (middle, y), (middle, y), Settings.ROADLINE_LINE_WIDTH)
+
+    def _die(self):
+        self._lives -= 1
+        self._group_of_enemies.empty()
