@@ -1,40 +1,30 @@
+from random import randrange
+
 import pygame
+from pygame import *
 
 from src.games.game import *
 from src.games.racing.board import Board
 from src.games.racing.enemy import Enemy
 from src.games.racing.player import Player
+from src.games.racing.settings import Settings
 from src.resources.layout_rsc import LayoutRsc
-from pygame import *
-
-from random import randrange
-
-from src.settings import GameLevel
 
 
 class Racing(Game):
-    GAME_SPEEDS = {  # TODO jagros: find better name
-        GameLevel.Easy : 0.5,
-        GameLevel.Medium : 0.2,
-        GameLevel.Hard : 0.1,
-    }
 
-    GAME_SPEEDS_SCORE_BONUS = {
-        GameLevel.Easy : 1,
-        GameLevel.Medium : 2,
-        GameLevel.Hard : 3,
-    }
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
-        self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, 2, 20)
-        self._roadway_width = LayoutRsc.GAME_AREA_WIDTH/2
-        self._player = Player(self._board, self._roadway_width)
+        self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, *Settings.BOARD_FIELDS)
+        self._player = Player(self._board)
         self._group_of_enemies = sprite.Group()
-        self._game_speed = Racing.GAME_SPEEDS[level]
+        self._game_speed = Settings.GAME_SPEEDS[level]
         self._time_since_last_update = self._game_speed
         self._level = level
         self._points_as_float = 0.0
-        self._empty_buffer_rect = Rect((0,-Enemy.CAR_HEIGHT), (LayoutRsc.GAME_AREA_WIDTH, 2*Enemy.CAR_HEIGHT))
+        self._empty_buffer_rect = Rect((0, -Settings.CAR_SIZE[1]),
+                                       (LayoutRsc.GAME_AREA_WIDTH, 2 * Settings.CAR_SIZE[1]))
+        self._points_earned_per_update = 1 / 2 * Settings.GAME_SPEEDS_SCORE_BONUS[self._level]
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -49,10 +39,10 @@ class Racing(Game):
         self._time_since_last_update -= delta_time
         if self._time_since_last_update <= 0:
             self._player.update()
-            self._group_of_enemies.update()
             self._create_enemy_if_possible()
+            self._group_of_enemies.update()
             self._time_since_last_update = self._game_speed
-            self._points_as_float += 1/2 * Racing.GAME_SPEEDS_SCORE_BONUS[self._level]
+            self._points_as_float += self._points_earned_per_update
             self._points = int(self._points_as_float)
 
     def render(self, window):
@@ -60,7 +50,6 @@ class Racing(Game):
         self._draw_road_lines(window)
         self._player.render(window)
         self._group_of_enemies.draw(window)
-        pygame.draw.rect(window, (255,255,255), self._empty_buffer_rect, 1) #TODO jagros: remove after debug
 
     def is_running(self):
         return self._has_player_collided()
@@ -80,17 +69,22 @@ class Racing(Game):
         if len(enemy_rect_list) == 0 or self._empty_buffer_rect.collidelist(enemy_rect_list) == -1:
             if randrange(100) < 30:  # 30% likelihood of generating car
                 roadway_to_take = randrange(2)
-                Enemy(self._group_of_enemies, self._board, self._roadway_width, roadway_to_take)
+                Enemy(self._group_of_enemies, self._board, roadway_to_take)
 
     def _draw_road_lines(self, window):
+        draw.line(window,
+                  Settings.WHITE,
+                    (Settings.OUTER_ROADLINE_MARGIN_X, Settings.OUTER_ROADLINE_MARGIN_Y),
+                  (Settings.OUTER_ROADLINE_MARGIN_X, LayoutRsc.GAME_AREA_HEIGHT - Settings.OUTER_ROADLINE_MARGIN_Y),
+                  Settings.ROADLINE_LINE_WIDTH)
 
-        draw.line(window, (255, 255, 255), (15, 5), (15, LayoutRsc.GAME_AREA_HEIGHT - 5), 10)
-        draw.line(window, (255, 255, 255), (LayoutRsc.GAME_AREA_WIDTH - 15, 5),
-                  (LayoutRsc.GAME_AREA_WIDTH - 15, LayoutRsc.GAME_AREA_HEIGHT - 5), 10)
+        draw.line(window,
+                  Settings.WHITE,
+                  (LayoutRsc.GAME_AREA_WIDTH - Settings.OUTER_ROADLINE_MARGIN_X, Settings.OUTER_ROADLINE_MARGIN_Y),
+                  (LayoutRsc.GAME_AREA_WIDTH - Settings.OUTER_ROADLINE_MARGIN_X, LayoutRsc.GAME_AREA_HEIGHT - Settings.OUTER_ROADLINE_MARGIN_Y),
+                  Settings.ROADLINE_LINE_WIDTH)
 
         middle = LayoutRsc.GAME_AREA_WIDTH / 2
         for y in range(LayoutRsc.GAME_AREA_HEIGHT):
-            if int(y / 10) % 2 == 0:
-                draw.line(window, (255, 255, 255), (middle, y), (middle, y), 10)
-
-
+            if int(y / Settings.ROADLINE_LINE_WIDTH) % 2 == 0:
+                draw.line(window, Settings.WHITE, (middle, y), (middle, y), Settings.ROADLINE_LINE_WIDTH)

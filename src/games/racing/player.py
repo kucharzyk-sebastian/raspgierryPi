@@ -1,5 +1,7 @@
 import pygame
 
+from src.games.racing.board import Board
+from src.games.racing.settings import Settings
 from src.resources.layout_rsc import LayoutRsc
 
 
@@ -8,27 +10,28 @@ class Player:
     RIGHT_ROADWAY = 1
 
     IMAGE = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'racing/player.png')
-    def __init__(self, board, roadway_width):
-        self._part_size = (int(roadway_width * 0.3), 70)
-        self.image = pygame.transform.scale(Player.IMAGE, self._part_size)
+
+    def __init__(self, board):
+        self.image = pygame.transform.scale(Player.IMAGE, Settings.CAR_SIZE)
         self.rect = self.image.get_rect()
 
         self._board = board
-        self._car_y_pos = self._board.get_amount_of_fields_vertically()-3
+        self._car_y_pos = self._board.get_amount_of_fields_vertically() - 2 * Board.FIELDS_OCCUPIED_BY_CAR
         self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
+        self._occupied_roadway = "left"
 
     def render(self, window):
         window.blit(self.image, self.rect)
 
     def update(self):
-        pass
+        if self._occupied_roadway == "left":
+            self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
+        elif self._occupied_roadway == "right":
+            self.rect.center = self._board.get_board_field_rect(Player.RIGHT_ROADWAY, self._car_y_pos).center
 
     def take_roadway(self, roadway):
-        if roadway == "left":
-            self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
-        elif roadway == "right":
-            self.rect.center = self._board.get_board_field_rect(Player.RIGHT_ROADWAY, self._car_y_pos).center
-        else:
+        allowed_roadways = ["left", "right"]
+        if roadway not in allowed_roadways:
             raise Exception("invalid roadway")
 
-
+        self._occupied_roadway = roadway
