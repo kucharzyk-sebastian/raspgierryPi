@@ -25,6 +25,7 @@ class Racing(Game):
         self._empty_buffer_rect = Rect((0, -Settings.CAR_SIZE[1]),
                                        (LayoutRsc.GAME_AREA_WIDTH, 2 * Settings.CAR_SIZE[1]))
         self._points_earned_per_update = 1 / 2 * Settings.GAME_SPEEDS_SCORE_BONUS[self._level]
+        self._is_running = True
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -38,6 +39,7 @@ class Racing(Game):
     def update(self, delta_time):
         self._time_since_last_update -= delta_time
         if self._time_since_last_update <= 0:
+            self._is_running = not self._has_player_collided()
             self._player.update()
             self._create_enemy_if_possible()
             self._group_of_enemies.update()
@@ -52,11 +54,13 @@ class Racing(Game):
         self._group_of_enemies.draw(window)
 
     def is_running(self):
-        return self._has_player_collided()
+        return self._is_running
 
     def _has_player_collided(self):
         list_of_enemies_rect = [x.rect for x in self._group_of_enemies.sprites()]
-        return self._player.rect.collidelist(list_of_enemies_rect)
+        if len(list_of_enemies_rect) == 0:
+            return False
+        return self._player.rect.collidelist(list_of_enemies_rect) != -1
 
     def get_points(self):
         return self._points

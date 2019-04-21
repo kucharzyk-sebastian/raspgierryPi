@@ -9,7 +9,6 @@ class Enemy(pygame.sprite.Sprite):
 
     def __init__(self, group_of_enemies, board, roadway):
         pygame.sprite.Sprite.__init__(self, group_of_enemies)
-
         self._roadway = roadway
         self._board = board
         self._car_y_pos = -1
