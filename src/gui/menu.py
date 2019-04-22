@@ -3,9 +3,9 @@ from src.resources.sound_rsc import *
 from src.gui.page import *
 from src.settings import *
 from src.controls.joystick import *
-from src.games.galaxian.galaxian import *
-from src.games.racing.racing import *
-from src.games.snake.snake import *
+from src.games.galaxian.galaxian import Galaxian
+from src.games.racing.racing import Racing
+from src.games.snake.snake import Snake
 
 
 class ButtonId(Enum):
