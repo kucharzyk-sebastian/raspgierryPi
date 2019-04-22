@@ -29,6 +29,7 @@ class RaspgierryPi:
     def run(self):
         while self._is_running:
             time_since_last_update = 0
+
             while self._menu.is_running():
                 self._menu.process_events(self._joystick)
                 time_since_last_update += self._clock.tick()
