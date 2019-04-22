@@ -104,7 +104,7 @@ class Menu:
             if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
                 joystick.process_event(event)
                 if joystick.is_a_pressed():
-                    self.get_into()
+                    self.move_into()
                 if joystick.is_arrow_downdir_pressed():
                     self.move_down()
                 if joystick.is_arrow_updir_pressed():
@@ -129,7 +129,7 @@ class Menu:
     def move_right(self):
         self._is_moving.right = True
 
-    def get_into(self):
+    def move_into(self):
         self._is_moving.into = True
 
     def update(self):

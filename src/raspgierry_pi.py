@@ -3,11 +3,11 @@ from src.gui.hud import *
 from src.helpers.files import *
 
 
-
 class RaspgierryPi:
+    MILLISECOND = 1000
     SCORES_DB_PATH = "../scores"
     SCORES_DB_FILENAME = "scores"
-    TIME_PER_FRAME = 0.1 * 1000
+    TIME_PER_FRAME = 0.1 * MILLISECOND
 
     def __init__(self):
         pygame.init()
@@ -49,7 +49,7 @@ class RaspgierryPi:
                     while time_since_last_update >= RaspgierryPi.TIME_PER_FRAME:
                         time_since_last_update -= RaspgierryPi.TIME_PER_FRAME
                         hud.process_events(self._joystick)
-                        hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)
+                        hud.update(RaspgierryPi.TIME_PER_FRAME * 0.001)  # convert to seconds
                     hud.render(self._window)
                 self.update_stats(game)
                 self._is_running = True
