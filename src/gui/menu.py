@@ -97,10 +97,6 @@ class Menu:
 
     def process_events(self, joystick):
         for event in pygame.event.get():
-            # TODO sk: remove these lines when game ready
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                sys.exit(0)
-
             if event.type in {JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION}:
                 joystick.process_event(event)
                 if joystick.is_a_pressed():

@@ -11,7 +11,7 @@ class RaspgierryPi:
 
     def __init__(self):
         pygame.init()
-        self._window = pygame.display.set_mode((LayoutRsc.WINDOW_WIDTH,  LayoutRsc.WINDOW_HEIGHT), RESIZABLE)
+        self._window = pygame.display.set_mode((LayoutRsc.WINDOW_WIDTH,  LayoutRsc.WINDOW_HEIGHT), FULLSCREEN)
         pygame.display.set_caption('Raspgierry Pi')
         try:
             self._joystick = Joystick(0)
