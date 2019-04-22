@@ -42,19 +42,18 @@ class Racing(Game):
     def update(self, delta_time):
         self._time_since_last_update -= delta_time
         if self._time_since_last_update <= 0:
-
-            if self._has_player_collided():
-                self._die()
-
-            if self._lives == -1:
-                self._is_running = False
-
             self._player.update()
             self._create_enemy_if_possible()
             self._group_of_enemies.update()
             self._time_since_last_update = self._refresh_time
             self._points_as_float += self._points_earned_per_update
             self._points = int(self._points_as_float)
+
+            if self._has_player_collided():
+                self._die()
+
+            if self._lives == -1:
+                self._is_running = False
 
     def render(self, window):
         window.fill(LayoutRsc.WINDOW_COLOR)
