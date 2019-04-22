@@ -50,4 +50,4 @@ class Snake(Game):
 
     def _die(self):
         self._lives -= 1
-        self._player.reset()
+        self._player.respawn()

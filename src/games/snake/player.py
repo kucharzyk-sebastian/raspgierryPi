@@ -13,7 +13,7 @@ class Player:
         self._pointsOccupied = sprite.Group()
         self._head = SnakeSettings.SNAKE_INITIAL_POSITION
         self._snake_speed = speed
-        self._time_since_last_update = self._snake_speed
+        self._time_to_next_update = self._snake_speed
         self._board = board
         self._is_sound_on = is_sound_on
         self._create_snake()
@@ -42,11 +42,11 @@ class Player:
         self._pointsOccupied.draw(window)
 
     def update(self, delta_time):
-        self._time_since_last_update -= delta_time
-        if self._time_since_last_update <= 0:
+        self._time_to_next_update -= delta_time
+        if self._time_to_next_update <= 0:
             self._pointsOccupied.update()
             self._move()
-            self._time_since_last_update = self._snake_speed
+            self._time_to_next_update = self._snake_speed
 
     def _move(self):
         new_head_rect = self._calculate_new_head_rect()
@@ -108,8 +108,9 @@ class Player:
         if self._is_sound_on:
             sound.play()
 
-    def reset(self):
+    def respawn(self):
         self._pointsOccupied.empty()
+        self._create_snake()
 
     def _create_snake(self):
         self._create_body_part(self._board.get_board_field_rect(self._head['x'], self._head['y'] - 1).center)
