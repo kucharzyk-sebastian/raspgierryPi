@@ -1,7 +1,6 @@
 import pygame
 
 from src.games.racing.settings import Settings
-from src.resources.layout_rsc import LayoutRsc
 from src.resources.racing_resources import RacingResources
 
 
@@ -9,10 +8,10 @@ class Player:
     LEFT_ROADWAY = 0
     RIGHT_ROADWAY = 1
 
-    IMAGE = pygame.image.load(RacingResources.PLAYER_TEXTURE_PATH)
+    IMAGE = pygame.transform.scale(pygame.image.load(RacingResources.PLAYER_TEXTURE_PATH), Settings.CAR_SIZE)
 
     def __init__(self, board):
-        self.image = pygame.transform.scale(Player.IMAGE, Settings.CAR_SIZE)
+        self.image = Player.IMAGE
         self.rect = self.image.get_rect()
 
         self._board = board

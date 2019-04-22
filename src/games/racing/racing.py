@@ -7,7 +7,7 @@ from src.games.game import *
 from src.games.racing.board import Board
 from src.games.racing.enemy import Enemy
 from src.games.racing.player import Player
-from src.games.racing.settings import Settings as stgns
+from src.games.racing.settings import Settings as stngs
 from src.resources.layout_rsc import LayoutRsc
 from src.resources.racing_resources import RacingResources
 
@@ -17,18 +17,18 @@ class Racing(Game):
 
     def __init__(self, level, is_sound_on):
         Game.__init__(self, level, is_sound_on)
-        self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, * stgns.BOARD_FIELDS)
+        self._board = Board(LayoutRsc.GAME_AREA_WIDTH, LayoutRsc.GAME_AREA_HEIGHT, * stngs.BOARD_FIELDS)
         self._player = Player(self._board)
         self._group_of_enemies = sprite.Group()
-        self._refresh_time = stgns.LVL_TO_REFRESH_TIME_MAP[level]
-        self._time_since_last_update = self._refresh_time
+        self._refresh_time = stngs.LVL_TO_REFRESH_TIME_MAP[level]
+        self._time_to_next_update = self._refresh_time
         self._level = level
         self._points_as_float = 0.0
-        self._empty_buffer_rect = Rect((0, -stgns.CAR_SIZE[1]),
-                                       (LayoutRsc.GAME_AREA_WIDTH, 2 * stgns.CAR_SIZE[1]))
-        self._points_earned_per_update = 1 / 2 * stgns.GAME_SPEEDS_SCORE_BONUS[self._level]
+        self._empty_buffer_rect = Rect((0, -stngs.CAR_SIZE[1]),
+                                       (LayoutRsc.GAME_AREA_WIDTH, 2 * stngs.CAR_SIZE[1]))
+        self._points_earned_per_update = stngs.POINTS_PER_UPDATE_FACTOR * stngs.GAME_SPEEDS_SCORE_BONUS[self._level]
         self._is_running = True
-        self._lives = stgns.AMOUNT_OF_LIVES
+        self._lives = stngs.AMOUNT_OF_LIVES
 
     def process_events(self, joystick):
         for event in pygame.event.get():
@@ -40,12 +40,12 @@ class Racing(Game):
                     self._player.take_roadway("right")
 
     def update(self, delta_time):
-        self._time_since_last_update -= delta_time
-        if self._time_since_last_update <= 0:
+        self._time_to_next_update -= delta_time
+        if self._time_to_next_update <= 0:
             self._player.update()
             self._create_enemy_if_possible()
             self._group_of_enemies.update()
-            self._time_since_last_update = self._refresh_time
+            self._time_to_next_update = self._refresh_time
             self._points_as_float += self._points_earned_per_update
             self._points = int(self._points_as_float)
 
@@ -79,31 +79,31 @@ class Racing(Game):
     def _create_enemy_if_possible(self):
         enemy_rect_list = [x.rect for x in self._group_of_enemies.sprites()]
         if len(enemy_rect_list) == 0 or self._empty_buffer_rect.collidelist(enemy_rect_list) == -1:
-            if randrange(100) < stgns.LIKELIHOOD_OF_GENERATING_ENEMY_PCT:
+            if randrange(100) < stngs.LIKELIHOOD_OF_GENERATING_ENEMY_PCT:
                 roadway_to_take = randrange(2)
                 Enemy(self._group_of_enemies, self._board, roadway_to_take)
 
     def _draw_road_lines(self, window):
         #left
         draw.line(window,
-                  stgns.WHITE,
-                  (stgns.OUTER_ROAD_MARKING_MARGIN_X, stgns.OUTER_ROAD_MARKING_MARGIN_Y),
-                  (stgns.OUTER_ROAD_MARKING_MARGIN_X, LayoutRsc.GAME_AREA_HEIGHT - stgns.OUTER_ROAD_MARKING_MARGIN_Y),
-                  stgns.ROAD_LINE_LINE_WIDTH)
+                  stngs.WHITE,
+                  (stngs.OUTER_ROAD_MARKING_MARGIN_X, stngs.OUTER_ROAD_MARKING_MARGIN_Y),
+                  (stngs.OUTER_ROAD_MARKING_MARGIN_X, LayoutRsc.GAME_AREA_HEIGHT - stngs.OUTER_ROAD_MARKING_MARGIN_Y),
+                  stngs.ROAD_LINE_LINE_WIDTH)
 
         #right
         draw.line(window,
-                  stgns.WHITE,
-                  (LayoutRsc.GAME_AREA_WIDTH - stgns.OUTER_ROAD_MARKING_MARGIN_X, stgns.OUTER_ROAD_MARKING_MARGIN_Y),
-                  (LayoutRsc.GAME_AREA_WIDTH - stgns.OUTER_ROAD_MARKING_MARGIN_X,
-                   LayoutRsc.GAME_AREA_HEIGHT - stgns.OUTER_ROAD_MARKING_MARGIN_Y),
-                  stgns.ROAD_LINE_LINE_WIDTH)
+                  stngs.WHITE,
+                  (LayoutRsc.GAME_AREA_WIDTH - stngs.OUTER_ROAD_MARKING_MARGIN_X, stngs.OUTER_ROAD_MARKING_MARGIN_Y),
+                  (LayoutRsc.GAME_AREA_WIDTH - stngs.OUTER_ROAD_MARKING_MARGIN_X,
+                   LayoutRsc.GAME_AREA_HEIGHT - stngs.OUTER_ROAD_MARKING_MARGIN_Y),
+                  stngs.ROAD_LINE_LINE_WIDTH)
 
         #middle
         middle = LayoutRsc.GAME_AREA_WIDTH / 2
         for y in range(LayoutRsc.GAME_AREA_HEIGHT):
-            if int(y / stgns.ROAD_LINE_LINE_WIDTH) % 2 == 0:
-                draw.line(window, stgns.WHITE, (middle, y), (middle, y), stgns.ROAD_LINE_LINE_WIDTH)
+            if int(y / stngs.ROAD_LINE_LINE_WIDTH) % 2 == 0:
+                draw.line(window, stngs.WHITE, (middle, y), (middle, y), stngs.ROAD_LINE_LINE_WIDTH)
 
     def _die(self):
         self._lives -= 1

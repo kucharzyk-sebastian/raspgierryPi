@@ -5,7 +5,7 @@ from src.resources.racing_resources import RacingResources
 
 
 class Enemy(pygame.sprite.Sprite):
-    IMAGE = pygame.image.load(RacingResources.ENEMY_TEXTURE_PATH)
+    IMAGE = pygame.transform.scale(pygame.image.load(RacingResources.ENEMY_TEXTURE_PATH), Settings.CAR_SIZE)
 
     def __init__(self, group_of_enemies, board, roadway):
         pygame.sprite.Sprite.__init__(self, group_of_enemies)
@@ -13,8 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self._board = board
         self._car_y_pos = -1
 
-        self._part_size = Settings.CAR_SIZE
-        self.image = pygame.transform.scale(Enemy.IMAGE, self._part_size)
+        self.image = Enemy.IMAGE
         self.rect = self.image.get_rect()
         self.rect.center = self._board.get_board_field_rect(self._roadway, 0).center
         self.rect = self.rect.move(0, -Settings.CAR_SIZE[1])  # initially moves car out of above board
