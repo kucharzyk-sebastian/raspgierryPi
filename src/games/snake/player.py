@@ -16,7 +16,7 @@ class Player:
         self._time_since_last_update = self._snake_speed
         self._board = board
         self._is_sound_on = is_sound_on
-        self._create_body_part()  # makes head of snake
+        self._create_snake()
         self._fruits_eaten = 0
 
     def _create_body_part(self, center_of_rect=None):
@@ -110,3 +110,7 @@ class Player:
 
     def reset(self):
         self._pointsOccupied.empty()
+
+    def _create_snake(self):
+        self._create_body_part(self._board.get_board_field_rect(self._head['x'], self._head['y'] - 1).center)
+        self._create_body_part(self._board.get_board_field_rect(self._head['x'], self._head['y']).center)
