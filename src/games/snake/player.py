@@ -29,11 +29,7 @@ class Player:
         allowed_directions = ["up", "down", "right", "left"]
         if direction not in allowed_directions:
             raise Exception("not allowed direction")
-
-        # move in opposite direction only allowed if snake size is 1
-        if len(self._pointsOccupied) == 1 or self._get_opposite_direction(self._direction) != direction:
-            self._prev_direction = self._direction
-            self._direction = direction
+        self._direction = direction
 
     def get_snake_size(self):
         return len(self._pointsOccupied)
@@ -49,6 +45,11 @@ class Player:
             self._time_to_next_update = self._snake_speed
 
     def _move(self):
+        if self._get_opposite_direction(self._direction) != self._prev_direction:
+            self._prev_direction = self._direction
+        else:
+            self._direction = self._prev_direction
+
         new_head_rect = self._calculate_new_head_rect()
         self._create_body_part(new_head_rect.center)
 
