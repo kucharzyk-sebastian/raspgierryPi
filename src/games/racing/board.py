@@ -1,12 +1,14 @@
 import pygame
 
+from src.games.racing.settings import Settings
 
-class Board():
-    FIELDS_OCCUPIED_BY_CAR = 4  # todo jagros calculate somehow
+
+class Board:
 
     def __init__(self, width, height, fields_horizontally, fields_vertically):
         self._fields_horizontally = fields_horizontally
-        self._fields_vertically = fields_vertically + Board.FIELDS_OCCUPIED_BY_CAR  # additional so that car could smoothly disapear from board
+        self._fields_vertically = fields_vertically + Settings.BUFFER_FIELDS_OUT_OF_BOARD  # additional fields so that
+        # car could smoothly disappear from board
 
         self._field_width = int(width / fields_horizontally)
         self._field_height = int(height / fields_vertically)

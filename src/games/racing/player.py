@@ -1,22 +1,22 @@
 import pygame
 
-from src.games.racing.board import Board
 from src.games.racing.settings import Settings
 from src.resources.layout_rsc import LayoutRsc
+from src.resources.racing_resources import RacingResources
 
 
 class Player:
     LEFT_ROADWAY = 0
     RIGHT_ROADWAY = 1
 
-    IMAGE = pygame.image.load(LayoutRsc.TEXTURES_PATH + 'racing/player.png')
+    IMAGE = pygame.image.load(RacingResources.PLAYER_TEXTURE_PATH)
 
     def __init__(self, board):
         self.image = pygame.transform.scale(Player.IMAGE, Settings.CAR_SIZE)
         self.rect = self.image.get_rect()
 
         self._board = board
-        self._car_y_pos = self._board.get_amount_of_fields_vertically() - 2 * Board.FIELDS_OCCUPIED_BY_CAR
+        self._car_y_pos = self._board.get_amount_of_fields_vertically() - 2 * Settings.BUFFER_FIELDS_OUT_OF_BOARD
         self.rect.center = self._board.get_board_field_rect(Player.LEFT_ROADWAY, self._car_y_pos).center
         self._occupied_roadway = "left"
 
