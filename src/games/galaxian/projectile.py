@@ -13,9 +13,6 @@ class Projectile(pygame.sprite.Sprite):
         self.image = Projectile.TEXTURE
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-        self._absolute_y = y
 
     def update(self, delta_time):
-        self._absolute_y -= Projectile.SPEED * delta_time
-        if (self.rect.y - self._absolute_y) > Projectile.HEIGHT:
-            self.rect.y = self._absolute_y
+        self.rect.y -= Projectile.SPEED * delta_time
