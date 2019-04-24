@@ -52,7 +52,7 @@ class Racing(Game):
             if self._has_player_collided():
                 self._die()
 
-            if self._lives == -1:
+            if self._lives == 0:
                 self._is_running = False
 
     def render(self, window):

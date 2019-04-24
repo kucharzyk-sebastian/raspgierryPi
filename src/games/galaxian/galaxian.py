@@ -72,7 +72,7 @@ class Galaxian(Game):
         for enemy in self._enemies:
             if enemy.rect.midbottom[1] > LayoutRsc.GAME_AREA_HEIGHT - Player.HEIGHT:
                 self._lives -= 1
-                if self._lives == -1:
+                if self._lives == 0:
                     self._is_running = False
                     self._play_sound_if_needed(GalaxianRsc.GAME_OVER)
                 else:

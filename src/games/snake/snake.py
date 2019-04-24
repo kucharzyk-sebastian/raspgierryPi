@@ -40,7 +40,7 @@ class Snake(Game):
         if self._player.has_collided_with_itself():
             self._die()
 
-        if self._lives == -1:
+        if self._lives == 0:
             self._is_running = False
 
     def render(self, window):
