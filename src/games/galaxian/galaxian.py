@@ -55,13 +55,22 @@ class Galaxian(Game):
             self._first_enemies_row_y = 0
 
     def _collide_enemies_with_projectiles(self):
-        for enemy in pygame.sprite.groupcollide(self._enemies, self._projectiles, True, True):
-            if enemy.is_special():
-                self._points += 3
-                self._play_sound_if_needed(GalaxianRsc.SPECIAL_ENEMY_DEATH)
-            else:
-                self._points += 1
-                self._play_sound_if_needed(GalaxianRsc.ENEMY_DEATH)
+        for enemy in self._enemies:
+            en_x_top, en_y_top = enemy.rect.midtop
+            en_x_bot, en_y_bot = enemy.rect.midbottom
+            for projectile in self._projectiles:
+                proj_x, proj_y = projectile.rect.midbottom
+                if en_x_top + Enemy.WIDTH / 2 > proj_x > en_x_top - Enemy.WIDTH / 2:
+                    if proj_y <= en_y_top or proj_y <= en_y_bot:
+                        if enemy.is_special():
+                            self._points += 3
+                            self._play_sound_if_needed(GalaxianRsc.SPECIAL_ENEMY_DEATH)
+                        else:
+                            self._points += 1
+                            self._play_sound_if_needed(GalaxianRsc.ENEMY_DEATH)
+                        enemy.kill()
+                        projectile.kill()
+                        break
 
     def _destroy_outrange_projectiles(self):
         for p in self._projectiles:
