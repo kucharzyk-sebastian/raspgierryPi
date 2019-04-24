@@ -32,6 +32,8 @@ class Snake(Game):
                     self._player.set_direction("left")
                 if joystick.is_arrow_rightdir_pressed():
                     self._player.set_direction("right")
+                if joystick.is_y_pressed():
+                    self._is_running = False
 
     def update(self, delta_time):
         self._player.update(delta_time)

@@ -38,6 +38,8 @@ class Racing(Game):
                     self._player.take_roadway("left")
                 if joystick.is_arrow_rightdir_pressed():
                     self._player.take_roadway("right")
+                if joystick.is_y_pressed():
+                    self._is_running = False
 
     def update(self, delta_time):
         self._time_to_next_update -= delta_time

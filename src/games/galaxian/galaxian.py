@@ -98,6 +98,8 @@ class Galaxian(Game):
                     self._player.move_right()
                 if joystick.is_arrow_leftdir_pressed():
                     self._player.move_left()
+                if joystick.is_y_pressed():
+                    self._is_running = False
 
     def get_points(self):
         return self._points

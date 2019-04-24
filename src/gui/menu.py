@@ -86,7 +86,8 @@ class Menu:
             PageId.HELP: Page(header="HELP",
                               buttons=[(ButtonType.TEXT_AREA,
                                         (ButtonId.CONTROLS, ["Go left: left arrow", "Go right: right arrow",
-                                                         "Go up: up arrow", "Go down: down arrow", "Action: A button"])),
+                                                             "Go up: up arrow", "Go down: down arrow",
+                                                             "Action: A button", "Exit game: Y button"])),
                                        (ButtonType.TEXT_WIDE, (ButtonId.BACK, "BACK"))]),
         }
         self._is_moving = DotDict({"up": False, "down": False, "left": False, "right": False, "into": False})
