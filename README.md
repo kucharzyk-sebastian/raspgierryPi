@@ -2,33 +2,8 @@
 
 Equivalent of the classic Brick Game recreated in Python for Raspberry Pi 3
 
-
-## Demo
-
-First view in the game is main menu where you can navigate through various things you can do:
-<p align="center">
-  <img src="./doc/screenshots/main_menu.png" />
-</p>
-
-
-One of them is a game choice which pops up after pressing "play" button:
 <p align="center">
   <img src="./doc/screenshots/cars.png" />
-</p>
-
-After choosing the game you will be able to play:
-<p align="center">
-  <img src="./doc/screenshots/galaxian.png" />
-</p>
-
-If you don't know how to play you can go to the help view:
-<p align="center">
-  <img src="./doc/screenshots/help.png" />
-</p>
-
-Or if you already achieved something you can find your result in best scores:
-<p align="center">
-  <img src="./doc/screenshots/best_scores.png" />
 </p>
 
 ## Getting Started
