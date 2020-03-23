@@ -24,6 +24,6 @@ Equivalent of the classic Brick Game recreated in Python for Raspberry Pi 3
 
 ## Contributing
 
-* Jakub Gros
-* Sebastian Kucharzyk
-* Mateusz Olejarz
+*  [Jakub Gros](https://github.com/jakubgros)
+*  [Sebastian Kucharzyk](https://github.com/kucharzyk-sebastian/NES_emulator)
+*  [Mateusz Olejarz](https://github.com/MatOlejarz)
